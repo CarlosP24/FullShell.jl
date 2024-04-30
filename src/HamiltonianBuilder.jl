@@ -24,6 +24,7 @@
     τΓ = 1
     Φ = 1                               #flux normalized to the flux quantum always
     ishollow::Bool = true
+    L = 100                             #length of the cylinder
 end
 
 # Hamiltonian constructor 
