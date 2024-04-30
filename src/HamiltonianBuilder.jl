@@ -23,21 +23,22 @@
     μ = 0
     τΓ = 1
     Φ = 1                               #flux normalized to the flux quantum always
+    ishollow::Bool = true
 end
 
 # Hamiltonian constructor 
 
 ΣS3DUsadel(Δ0, Λ, ω;) = -(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
 
-build_cyl(; nforced = nothing, MHC = true, kw...) = build_cyl(Params(; kw...); nforced, MHC)
+build_cyl(; nforced = nothing, kw...) = build_cyl(Params(; kw...); nforced,)
 
-function build_cyl(p::Params; nforced = nothing, MHC = true)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ = p 
+function build_cyl(p::Params; nforced = nothing)
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, ishollow = p 
 
     # Lattice
 
     R = floor(R/a0)*a0
-    lat = if MHC
+    lat = if ishollow
             Rav = R - w/2
             LP.square(; a0) |> supercell((1, 0)) |> Quantica.transform!(r -> r + SA[0, Rav])
           else
