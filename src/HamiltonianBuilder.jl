@@ -49,7 +49,7 @@ function build_cyl(p::Params; nforced = nothing)
     # Model
 
     # Kinetic term
-    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!MHC) - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
+    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*ishollow) - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
@@ -81,7 +81,7 @@ function build_cyl(p::Params; nforced = nothing)
     Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
           o + τΓ * Δ0 * ΣS3DUsadel(Δ0, Λ(Φ), ω);
-          region = MHC ? Returns(true) : r -> r[2] > R - a0/2
+          region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
     hSC = hSM |> ΣS!
