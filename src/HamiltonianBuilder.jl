@@ -49,7 +49,7 @@ function build_cyl(p::Params; nforced = nothing)
     # Model
 
     # Kinetic term
-    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*ishollow) - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
+    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow) - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
