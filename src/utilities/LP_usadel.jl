@@ -14,3 +14,23 @@ function uUsadel(Δ0, Λ, ω)
     return usa
 end
 
+function ΦLP(n, ξd, R, d)
+    RLP = R + d/2
+    pre = 1.76 * π * exp(π/4) / 4
+    frac1 = 1 / (1 + (d / (2 * RLP))^2)
+    frac2 = 1 / (1 + (2 * RLP / d)^2)
+    frac3 = RLP^2 / ξd^2
+    root = pre * frac3 * frac1 - n^2 * frac2 * (1/3 + frac1)
+    ΦLP = n * frac1 + sqrt(root)
+    return ΦLP
+end
+
+function isdestructive(n, ξd, R, d)
+    ΦLP = ΦLP(n, ξd, R, d)
+    return !(abs(ΦLP - n) < 1/2)
+end
+
+function is_in_lobe(n, Φ, ΦLP)
+    return abs(Φ - n) <= abs(ΦLP - n)
+end
+
