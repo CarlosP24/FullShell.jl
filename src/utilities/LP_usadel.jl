@@ -21,16 +21,17 @@ function LP_lobe(n, ξd, R, d)
     frac2 = 1 / (1 + (2 * RLP / d)^2)
     frac3 = RLP^2 / ξd^2
     root = pre * frac3 * frac1 - n^2 * frac2 * (1/3 + frac1)
-    ΦLP = n * frac1 + sqrt(root)
-    return ΦLP
+    ΦLPa = n * frac1 - sqrt(root)
+    ΦLPb = n * frac1 + sqrt(root)
+    return ΦLPa, ΦLPb
 end
 
 function isdestructive(n, ξd, R, d)
-    ΦLP = ΦLP(n, ξd, R, d)
-    return !(abs(ΦLP - n) < 1/2)
+    ΦLPa, ΦLPb = ΦLP(n, ξd, R, d)
+    return !(ΦLPb - n <= 1/2)
 end
 
-function is_in_lobe(n, Φ, ΦLP)
-    return abs(Φ - n) <= abs(ΦLP - n)
+function is_in_lobe(Φ, ΦLPa, ΦLPb)
+    return (ΦLPa <= Φ) && (Φ <= ΦLPb)
 end
 
