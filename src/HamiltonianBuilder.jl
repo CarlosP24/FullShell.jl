@@ -81,7 +81,7 @@ function build_cyl(p::Params; nforced = nothing)
     Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
     ΦLP(Φ) = LP_lobe(n(Φ), ξd, R, d)
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
-          o +  τΓ * Δ0 * ifelse(is_in_lobe(Φ, ΦLP(Φ)...), ΣS3DUsadel(Δ0, Λ(Φ), ω), 1im * σ0τ0);
+          o +  τΓ * Δ0 * ifelse(is_in_lobe(Φ, ΦLP(Φ)...), ΣS3DUsadel(Δ0, Λ(Φ), ω), -1im * σ0τ0);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
