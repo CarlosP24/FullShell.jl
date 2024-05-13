@@ -3,7 +3,7 @@ module FullShell
 using Quantica 
 using Parameters
 
-export build_cyl, ΣS3DUsadel, pairbreaking
+export build_cyl, ΣS3DUsadel, pairbreaking, LP_lobe
 
 export Params
 
