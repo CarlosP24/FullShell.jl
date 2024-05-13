@@ -20,7 +20,7 @@ function LP_lobe(n, ξd, R, d)
     frac1 = 1 / (1 + (d / (2 * RLP))^2)
     frac2 = 1 / (1 + (2 * RLP / d)^2)
     frac3 = RLP^2 / ξd^2
-    root = pre * frac3 * frac1 - n^2 * frac2 * (1/3 + frac1)
+    root = pre * frac3 * frac1 + n^2 * frac2 * (frac2 - 4/3)
     ΦLPa = n * frac1 - sqrt(root)
     ΦLPb = n * frac1 + sqrt(root)
     return ΦLPa, ΦLPb
