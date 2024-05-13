@@ -16,7 +16,7 @@ end
 
 function LP_lobe(n, ξd, R, d)
     RLP = R + d/2
-    pre = 1.76 * π * exp(π/4) / 4
+    pre = 1.76 * π * exp(-π/4) / 4
     frac1 = 1 / (1 + (d / (2 * RLP))^2)
     frac2 = d^2 / (d^2 + 4 * RLP^2)
     frac3 = RLP^2 / ξd^2
