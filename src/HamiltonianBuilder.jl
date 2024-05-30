@@ -30,6 +30,7 @@ end
 # Hamiltonian constructor 
 
 ΣS3DUsadel(Δ0, Λ, ω;) = -(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
+ΣS3DUsadel_out(Δ0, Λ, ω;) = -(uUsadel(Δ0, Λ, ω) * σ0τ0) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
 
 build_cyl(; nforced = nothing, kw...) = build_cyl(Params(; kw...); nforced,)
 
@@ -81,7 +82,7 @@ function build_cyl(p::Params; nforced = nothing)
     Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
     ΦLP(Φ) = LP_lobe(n(Φ), ξd, R, d)
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
-          o +  τΓ * Δ0 * ifelse(is_in_lobe(Φ, ΦLP(Φ)...), ΣS3DUsadel(Δ0, Λ(Φ), ω), 0 * σ0τ0);
+          o +  τΓ * Δ0 * ifelse(is_in_lobe(Φ, ΦLP(Φ)...), ΣS3DUsadel(Δ0, Λ(Φ), ω), ΣS3DUsadel_out(Δ0, Λ(Φ), ω));
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
