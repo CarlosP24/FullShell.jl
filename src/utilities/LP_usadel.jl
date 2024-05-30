@@ -5,7 +5,7 @@ function pairbreaking(Φ, n, Δ0, ξd, R, d)
 end
 
 function ps_sign(x)
-    return real(x) < 0 ? -1 : 1
+    return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
 end
 
 function uUsadel(Δ0, Λ, ω)
