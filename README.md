@@ -17,7 +17,7 @@ julia> Pkg.instantiate()
 
 ## Examples
 ### Building a full-shell Hamiltonian
-Default parameters are in units meV and nm.
+Default parameters are in meV and nm.
 ````
 julia> using FullShell
 
