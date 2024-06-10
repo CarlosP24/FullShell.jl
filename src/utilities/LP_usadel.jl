@@ -24,17 +24,17 @@ function uUsadel(Δ0, Λ, ω)
 end
 
 
-# function LP_lobe(n, ξd, R, d)
-#     RLP = R + d/2
-#     pre = 1.76 * π * exp(-π/4) / 4
-#     frac1 = 1 / (1 + (d / (2 * RLP))^2)
-#     frac2 = d^2 / (d^2 + 4 * RLP^2)
-#     frac3 = RLP^2 / ξd^2
-#     root = pre * frac3 * frac1 + n^2 * frac2 * (frac2 - 4/3)
-#     ΦLPa = n * frac1 - sqrt(root)
-#     ΦLPb = n * frac1 + sqrt(root)
-#     return ΦLPa, ΦLPb
-# end
+function LP_lobe(n, ξd, R, d)
+    RLP = R + d/2
+    pre = 1.76 * π * exp(-π/4) / 4
+    frac1 = 1 / (1 + (d / (2 * RLP))^2)
+    frac2 = d^2 / (d^2 + 4 * RLP^2)
+    frac3 = RLP^2 / ξd^2
+    root = pre * frac3 * frac1 + n^2 * frac2 * (frac2 - 4/3)
+    ΦLPa = n * frac1 - sqrt(root)
+    ΦLPb = n * frac1 + sqrt(root)
+    return ΦLPa, ΦLPb
+end
 
 # function isdestructive(n, ξd, R, d)
 #     ΦLPa, ΦLPb = ΦLP(n, ξd, R, d)
