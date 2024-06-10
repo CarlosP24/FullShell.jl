@@ -17,7 +17,7 @@ function uUsadel(Δ0, Λ, ω)
     rai = sqrt(complex(ω^2 - 2 * nun / 3 + nun^2 / (3 * pep) + pep / 3))
     usaIn = 1/(2 * Δd) *(ω + ps_sign(ω) * rai - ps_sign(ω) * sqrt(complex(2 * ω^2 - 4 * nun/3 - nun^2 /(3 * pep) - pep/ 3 - ps_sign(ω) * 2 * (Δd^2 + Λ^2) * ω / rai)))
     usaOut = 1/(2 * Δd) *(ω + ps_sign(ω) * rai - ps_sign(ω) * sqrt(complex(2 * ω^2 - 4 * nun/3 - nun^2 /(3 * pep) - pep/ 3 - ps_sign(ω) * 2 * (Δd^2 + Λ^2) * ω / rai)))
-    usa = ifelse(Λ <= Δd, usaIn, usaOut)
+    usa = ifelse(Λ <= e^(-π/4) * Δ0, usaIn, usaOut)
     return usa
 end
 
