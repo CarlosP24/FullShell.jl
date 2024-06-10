@@ -1,5 +1,3 @@
-include("AbrikosovSolver.jl")
-
 function pairbreaking(Φ, n, Δ0, ξd, R, d)
     RLP = R + d/2
     Λ = ξd^2 * Δ0 / (1.76 * π * RLP^2) * (4 * (Φ - n)^2 + d^2 / RLP^2 * (Φ^2 + (n^2)/3))
@@ -8,6 +6,22 @@ end
 
 function ps_sign(x)
     return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
+end
+
+function P(z)
+    if z <= 1
+        p = π/4 * z 
+    else
+        p = log(z + sqrt(z^2 - 1)) + z/2 * atan(1/sqrt(z^2 - 1)) - sqrt(z^2 - 1)/(2*z)
+    end
+    return p
+end
+
+f(Δd, Δ0 = 0.23; Λ = 0) = log(Δd/Δ0) + P(Λ/Δd)
+
+function ΔΛ(Λ, Δ0)
+    g(Δd) = f(Δd, Δ0; Λ)
+    return get(find_zeros(g, 0, Δ0), 1, 0)
 end
 
 function uUsadel(Δ0, Λ, ω)
@@ -20,7 +34,7 @@ function uUsadel(Δ0, Λ, ω)
     rai = sqrt(complex(ω^2 - 2 * nun / 3 + nun^2 / (3 * pep) + pep / 3))
     usaIn = 1/(2 * Δd) *(ω + ps_sign(ω) * rai - ps_sign(ω) * sqrt(complex(2 * ω^2 - 4 * nun/3 - nun^2 /(3 * pep) - pep/ 3 - ps_sign(ω) * 2 * (Δd^2 + Λ^2) * ω / rai)))
     usaOut = ps_sign(ω) * ω / sqrt(complex(ω^2 + Λ^2))
-    return usaIn
+    return ifelse(Δd > 0, usaIn, usaOut)
 end
 
 function LP_lobe(n, ξd, R, d)
