@@ -9,8 +9,7 @@ end
 
 f(Δd, Δ0 = 0.23; Λ = 0) = log(Δd/Δ0) + P(Λ/Δd)
 
-function Δd(Λ, Δ0)
+function ΔΛ(Λ, Δ0)
     g(Δd) = f(Δd, Δ0; Λ)
     return get(find_zeros(g, 0, Δ0), 1, 0)
 end
-
