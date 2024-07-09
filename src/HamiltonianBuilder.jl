@@ -34,7 +34,7 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 
 build_cyl(; nforced = nothing, kw...) = build_cyl(Params(; kw...); nforced,)
 
-function build_cyl(p::Params; nforced = nothing)
+function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, ishollow = p 
 
     # Lattice
@@ -85,7 +85,17 @@ function build_cyl(p::Params; nforced = nothing)
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
+    # Superconductor phase 
+    PhaseShift! = @onsite!((0, r; phase = 0) -> 
+                  conj(Uphase(phase)) * o * Uphase(phase);
+                  region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
+    )
+
     hSC = hSM |> ΣS!
+
+    if phaseshifted
+        hSC = hSC |> PhaseShift!
+    end
 
     return hSM, hSC, p
 end
