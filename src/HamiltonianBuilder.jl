@@ -86,7 +86,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     )
 
     # Superconductor phase 
-    PhaseShift! = @onsite!((0, r; phase = 0) -> 
+    PhaseShift! = @onsite!((o, r; phase = 0) -> 
                   conj(Uphase(phase)) * o * Uphase(phase);
                   region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
