@@ -32,7 +32,7 @@ end
 ΣS3DUsadel(Δ0, Λ, ω;) = -(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
 Uphase(phase) = exp(im * phase * σ0τz /2)
 
-build_cyl(; nforced = nothing, kw...) = build_cyl(Params(; kw...); nforced,)
+build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, ishollow = p 
