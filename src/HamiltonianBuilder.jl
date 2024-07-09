@@ -30,6 +30,7 @@ end
 # Hamiltonian constructor 
 
 ΣS3DUsadel(Δ0, Λ, ω;) = -(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
+Uphase(phase) = exp(im * phase * σ0τz /2)
 
 build_cyl(; nforced = nothing, kw...) = build_cyl(Params(; kw...); nforced,)
 
@@ -79,8 +80,8 @@ function build_cyl(p::Params; nforced = nothing)
 
     # Superconductor
     Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
-    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
-          o +  τΓ * Δ0 * ΣS3DUsadel(Δ0, Λ(Φ), ω);
+    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, phase = 0) ->
+          o +  τΓ * Δ0 * conj(Uphase(phase)) * ΣS3DUsadel(Δ0, Λ(Φ), ω) * Uphase(phase);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
