@@ -80,8 +80,8 @@ function build_cyl(p::Params; nforced = nothing)
 
     # Superconductor
     Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
-    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, phase = 0) ->
-          o +  τΓ * Δ0 * conj(Uphase(phase)) * ΣS3DUsadel(Δ0, Λ(Φ), ω) * Uphase(phase);
+    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
+          o +  τΓ * Δ0 *  ΣS3DUsadel(Δ0, Λ(Φ), ω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
