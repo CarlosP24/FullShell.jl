@@ -20,6 +20,7 @@
     B = 0
     Δ0::ComplexF64 = 0.23
     ξd = 70
+    L = 0
 end
 
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
