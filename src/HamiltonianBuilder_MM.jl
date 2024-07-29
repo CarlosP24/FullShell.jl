@@ -5,6 +5,7 @@
 @with_kw struct Params_mm @deftype Float64
     ħ2ome = 76.1996
     conv = 1.5193e-3 # Magnetic field in T to flux prefactor
+    μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
     m0 = 0.023
     a0 = 5
     t = ħ2ome/(2m0*a0^2)
@@ -23,7 +24,6 @@
     L = 0
 
     # unneccesary here, but needed for legacy code 
-    μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
     preα = 0
     Φ = 0                               #flux normalized to the flux quantum always
     ishollow::Bool = true
@@ -35,7 +35,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd  = p
+    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd  = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
