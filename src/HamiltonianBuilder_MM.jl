@@ -21,6 +21,15 @@
     Δ0::ComplexF64 = 0.23
     ξd = 70
     L = 0
+
+    # unneccesary here, but needed for legacy code 
+    μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
+    preα = 0
+    Φ = 0                               #flux normalized to the flux quantum always
+    ishollow::Bool = true
+    Vmax = 0                            #dome profile parameters
+    Vmin = 0
+    Vexponent = 0
 end
 
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
