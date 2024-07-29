@@ -71,7 +71,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     # SM hamiltonian 
 
-    hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
+    hSM = lat |> hamiltonian(p2 + rashba + zeeman + gauge; orbitals = Val(4))
 
     # Superconductor
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
