@@ -12,4 +12,7 @@ const σxτ0 = @SMatrix[0 1 0 0; 1 0 0 0; 0 0 0 1; 0 0 1 0]
 const σ0 = SA[1 0; 0 1]
 const σx = SA[0 1; 1 0]
 const σy = SA[0 -im; im 0]
-const σz = SA[1 0; 0 -1];
+const σz = SA[1 0; 0 -1]
+
+const c_up = @SMatrix[1 0 0 0; 0 1 0 0; 0 0 0 0; 0 0 0 0] 
+const c_down = @SMatrix[0 0 0 0; 0 0 0 0; 0 0 1 0; 0 0 0 1] 

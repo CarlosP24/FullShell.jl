@@ -4,7 +4,7 @@
     μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
     m0 = 0.023
     g = 12
-    P = 919.7                           #Bulck SOC parameters
+    P = 919.7                           #Bulk SOC parameters
     Δg = 417  
     Δs = 390  
     preα = P^2/3 * (1/Δg^2 - 1/(Δg + Δs)^2)  #α = preα \times Rashba things
