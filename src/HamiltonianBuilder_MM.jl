@@ -77,13 +77,11 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
     ΣS! = @onsite!((o, r; ω = 0, B = B, τΓ = τΓ) ->
             o +  τΓ * Δ0 *  ΣS3DUsadel(Δ0, Λ(B), ω);
-            region = Returns(true)
     )
 
     # Superconductor phase 
     PhaseShift! = @onsite!((o, r; phase = 0) -> 
         conj(Uphase(phase)) * o * Uphase(phase);
-        region = Returns(true) 
     )
 
     hSC = hSM |> ΣS!
