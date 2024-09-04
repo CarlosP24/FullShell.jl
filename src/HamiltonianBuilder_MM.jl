@@ -22,6 +22,7 @@
     Δ0::ComplexF64 = 0.23
     ξd = 70
     L = 0
+    σ = 0                               #Noise parameter, unused here but useful for further constructions
 
     # unneccesary here, but needed for legacy code 
     preα = 0
