@@ -31,7 +31,7 @@ end
 # Hamiltonian constructor 
 
 ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
-ΣΔ(Δ0, Λ, ω;) = (ΔD(Λ, Δ0)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
+ΣΔ(Δ0, Λ, ω;) = (ΔD(Λ, Δ0, ω)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
 Uphase(phase) = exp(im * phase * σ0τz /2)
 
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
