@@ -23,6 +23,7 @@
     ξd = 70
     L = 0
     σ = 0                               #Noise parameter, unused here but useful for further constructions
+    Usadel = true
 
     # unneccesary here, but needed for legacy code 
     preα = 0
@@ -36,7 +37,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd  = p
+    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, Usadel  = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -76,8 +77,15 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     # Superconductor
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
+
+    if Usadel 
+        ΣS = ΣS3DUsadel
+      else
+        ΣS = ΣΔ
+      end
+
     ΣS! = @onsite!((o, r; ω = 0, B = B, τΓ = τΓ) ->
-            o +  τΓ * Δ0 *  ΣS3DUsadel(Δ0, Λ(B), ω);
+            o +  τΓ * ΣS(Δ0, Λ(B), ω);
     )
 
     # Superconductor phase 
