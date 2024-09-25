@@ -10,13 +10,18 @@ function ps_sign(x)
     return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
 end
 
-function uUsadel(Δ0, Λ, ω)
-    ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
-    #Δd = Δ0 * (1 - π/4 * Λ/Δ0 - π^2/32 * (Λ/Δ0)^2 - π^3/96 * (Λ/Δ0)^3)
+function ΔD(Λ, Δ0)
     Δd = ΔΛ(real(Λ), real(Δ0))
     if !(Δd > 0)
         Δd = ΔΛ(real(Δ0/2 - imag(ω)), real(Δ0))
     end
+    return Δd
+end
+
+function uUsadel(Δ0, Λ, ω)
+    ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
+    #Δd = Δ0 * (1 - π/4 * Λ/Δ0 - π^2/32 * (Λ/Δ0)^2 - π^3/96 * (Λ/Δ0)^3)
+    Δd = ΔD(Λ, Δ0)
     pep = complex(-Δd^6 + 3 * Δd^4 * (Λ^2 + ω^2) + (Λ^2 + ω^2)^3 - 3 * Δd^2 * (Λ^4 - 16 * Λ^2 * ω^2 + ω^4) + 
     6 * Δd * Λ * sqrt(complex(-3*(Δd^2 - Λ^2)^3 * ω^2 + 9 * (Δd^4 + 7 * Δd^2 * Λ^2 + Λ^4) * ω^4 + 9 * (-Δd^2 + Λ^2) * ω^6 + 3 * ω^8)))^(1/3)
     nun = ω^2 - Δd^2 + Λ^2
