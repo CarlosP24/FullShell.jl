@@ -7,7 +7,8 @@ function pairbreaking(Φ, n, Δ0, ξd, R, d)
 end
 
 function ps_sign(x)
-    return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
+    #return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
+    return -1
 end
 
 function ΔD(Λ, Δ0, ω)
