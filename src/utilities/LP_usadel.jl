@@ -13,7 +13,8 @@ end
 function ΔD(Λ, Δ0, ω)
     Δd = ΔΛ(real(Λ), real(Δ0))
     if !(Δd > 0)
-        Δd = ΔΛ(real(Δ0/2 - imag(ω)), real(Δ0))
+        # Δd = ΔΛ(real(Δ0/2 - imag(ω)), real(Δ0))
+        Δd = ΔΛ(real(Δ0/2 - 1e-5), real(Δ0))
     end
     return Δd
 end
@@ -23,7 +24,7 @@ function Ω(Λ, Δ0, ω)
 end
 
 function usimple(Δ0, Λ, ω)
-    return ω/Ω(Λ, Δ0, ω)
+    return (ω/Ω(Λ, Δ0, ω)) * sqrt(complex(1 - (ω/Ω)^2))
 end
 
 function uUsadel(Δ0, Λ, ω)
