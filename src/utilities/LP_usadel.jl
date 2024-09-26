@@ -18,6 +18,14 @@ function ΔD(Λ, Δ0, ω)
     return Δd
 end
 
+function Ω(Λ, Δ0, ω)
+    return (ΔD(Λ, Δ0, ω)^(2/3) -  Λ^(2/3))^(3/2)
+end
+
+function usimple(Δ0, Λ, ω)
+    return ω/Ω(Λ, Δ0, ω)
+end
+
 function uUsadel(Δ0, Λ, ω)
     ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
     #Δd = Δ0 * (1 - π/4 * Λ/Δ0 - π^2/32 * (Λ/Δ0)^2 - π^3/96 * (Λ/Δ0)^3)
