@@ -8,7 +8,7 @@ end
 
 function ps_sign(x)
     #return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
-    return -1
+    return -1.0 + 1e-5im
 end
 
 function ΔD(Λ, Δ0, ω)
