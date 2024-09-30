@@ -27,12 +27,12 @@ end
 
 # Modified ps_sign so uUsadel is analitical in the full complex plane. 
 # WARNING: it is defined only for NEGATIVE frequencies.
-function ps_sign(x)
+function ps_sign(x, iω)
     #return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
-    return -1.0 + 1e-3im
+    return -1.0 + iω*1im
 end
 
-function uUsadel(Δ0, Λ, ω)
+function uUsadel(Δ0, Λ, ω, iω)
     #ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
     #Δd = Δ0 * (1 - π/4 * Λ/Δ0 - π^2/32 * (Λ/Δ0)^2 - π^3/96 * (Λ/Δ0)^3)
     Δd = ΔD(Λ, Δ0, ω)
@@ -40,7 +40,7 @@ function uUsadel(Δ0, Λ, ω)
     6 * Δd * Λ * sqrt(complex(-3*(Δd^2 - Λ^2)^3 * ω^2 + 9 * (Δd^4 + 7 * Δd^2 * Λ^2 + Λ^4) * ω^4 + 9 * (-Δd^2 + Λ^2) * ω^6 + 3 * ω^8)))^(1/3)
     nun = ω^2 - Δd^2 + Λ^2
     rai = sqrt(complex(ω^2 - 2 * nun / 3 + nun^2 / (3 * pep) + pep / 3))
-    usaIn = 1/(2 * Δd) *(ω + ps_sign(ω) * rai - ps_sign(ω) * sqrt(complex(2 * ω^2 - 4 * nun/3 - nun^2 /(3 * pep) - pep/ 3 - ps_sign(ω) * 2 * (Δd^2 + Λ^2) * ω / rai)))
+    usaIn = 1/(2 * Δd) *(ω + ps_sign(ω, iω) * rai - ps_sign(ω, iω) * sqrt(complex(2 * ω^2 - 4 * nun/3 - nun^2 /(3 * pep) - pep/ 3 - ps_sign(ω, iω) * 2 * (Δd^2 + Λ^2) * ω / rai)))
     return  usaIn
 end
 

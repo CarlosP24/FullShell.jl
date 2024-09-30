@@ -26,12 +26,13 @@
     ishollow::Bool = true
     L = 100                             #length of the cylinder
     Usadel::Bool = true
+    iω = 1e-4
 end
 
 # Hamiltonian constructor 
-ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
+ΣS3DUsadel(Δ0, Λ, ω, iω;) = - Δ0 *(uUsadel(Δ0, Λ, ω, iω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω, iω)^2))
 #ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(usimple(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-usimple(Δ0, Λ, ω)^2))
-ΣΔ(Δ0, Λ, ω;) = (ΔD(Λ, Δ0, ω)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
+ΣΔ(Δ0, Λ, ω, iω;) = (ΔD(Λ, Δ0, ω)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
 Uphase(phase) = exp(im * phase * σ0τz /2)
 
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
@@ -90,7 +91,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     end
 
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
-          o +  τΓ * ΣS(Δ0, Λ(Φ), ω);
+          o +  τΓ * ΣS(Δ0, Λ(Φ), ω + iω*1im, iω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
