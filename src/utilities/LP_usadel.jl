@@ -29,11 +29,11 @@ end
 # WARNING: it is defined only for NEGATIVE frequencies.
 function ps_sign(x)
     #return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
-    return -1.0 + 1e-9im
+    return -1.0 + 1e-3im
 end
 
 function uUsadel(Δ0, Λ, ω)
-    ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
+    #ω = ifelse(real(ω) == 0, imag(ω) + imag(ω)*im, ω)
     #Δd = Δ0 * (1 - π/4 * Λ/Δ0 - π^2/32 * (Λ/Δ0)^2 - π^3/96 * (Λ/Δ0)^3)
     Δd = ΔD(Λ, Δ0, ω)
     pep = complex(-Δd^6 + 3 * Δd^4 * (Λ^2 + ω^2) + (Λ^2 + ω^2)^3 - 3 * Δd^2 * (Λ^4 - 16 * Λ^2 * ω^2 + ω^4) + 
