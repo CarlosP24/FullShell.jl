@@ -86,7 +86,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
       end
 
     ΣS! = @onsite!((o, r; ω = 0, B = B, τΓ = τΓ) ->
-            o +  τΓ * ΣS(Δ0, Λ(B), ω + iω*1im, iω);
+            o +  τΓ * ΣS(Δ0, Λ(B), ω + iω*1im);
     )
 
     # Superconductor phase 
