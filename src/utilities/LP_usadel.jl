@@ -49,7 +49,7 @@ function uUsadel(Δ0, Λ, ω)
     pep = complex(-Δd^6 + 3 * Δd^4 * (Λ^2 + ω^2) + (Λ^2 + ω^2)^3 - 3 * Δd^2 * (Λ^4 - 16 * Λ^2 * ω^2 + ω^4) + 6 * Δd * Λ * sqrt(complex(-3*(Δd^2 - Λ^2)^3 * ω^2 + 9 * (Δd^4 + 7 * Δd^2 * Λ^2 + Λ^4) * ω^4 + 9 * (-Δd^2 + Λ^2) * ω^6 + 3 * ω^8)))^(1/3)
     nun = complex(ω^2 - Δd^2 + Λ^2)
     rai = sqrt(complex(ω^2 - 2 * nun / 3 + nun^2 / (3 * pep) + pep / 3))
-    usa = ω / (2Δd) - rai / (2Δd) + sqrt(complex(2ω^2 - 4 * nun /3 - nun^2 / (3 * pep) - pep /3 + 2 * (Δd^2 + Λ^2) * ω / rai)) / (2Δd)
+    usa = complex(ω / (2Δd) - rai / (2Δd) + sqrt(complex(2ω^2 - 4 * nun /3 - nun^2 / (3 * pep) - pep /3 + 2 * (Δd^2 + Λ^2) * ω / rai)) / (2Δd))
     return usa
 end
 
