@@ -68,7 +68,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     # Magnetic field
     area_LP = π * (R + d/2)^2 
-    eAφ(r, Φ) = echarge * 0.5 * π * Φ * r[2] / area_LP
+    eAφ(r, Φ) = echarge * 0.5 * π * Φ * r[2]^2 / area_LP
     n(Φ) = ifelse(nforced === nothing, round(Int, Φ), nforced)
     mJ(Z, Φ) = Z + ifelse(iseven(n(Φ)), 0.5, 0.0)
     J(Z, Φ) = mJ(Z, Φ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ) * σ0τz 
