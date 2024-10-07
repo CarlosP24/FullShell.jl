@@ -53,6 +53,17 @@ function uUsadel(Δ0, Λ, ω)
     return usa
 end
 
+function itip(Δ0, Λ)
+    Δd = ΔD(Λ, Δ0)
+    x = Λ/Δd
+    p1 = -4 + 4*x^2
+    n2 = 2 * 2^(1/3) * (1 - 47 * x^2 + x^4)
+    d2 = (2 + 345 * x^2 - 345 * x^4 - 2 * x^6 + 9 * sqrt(3) * x * (1 + x^2) * sqrt(8 + 359 * x^2 + 8 * x^4))^(1/3)
+    p2 = n2 / d2
+    p3 = 2^(2/3) * d2
+    return sqrt((p1 + p2 + p3) / 6) * Δd
+end
+
 function LP_lobe(n, ξd, R, d)
     RLP = R + d/2
     pre = 1.76 * π * exp(-π/4) / 4
