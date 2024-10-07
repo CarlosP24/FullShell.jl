@@ -61,7 +61,8 @@ function itip(Δ0, Λ)
     d2 = (2 + 345 * x^2 - 345 * x^4 - 2 * x^6 + 9 * sqrt(3) * x * (1 + x^2) * sqrt(8 + 359 * x^2 + 8 * x^4))^(1/3)
     p2 = n2 / d2
     p3 = 2^(2/3) * d2
-    return sqrt(complex((p1 + p2 + p3) / 6)) * Δd
+    iωm =  sqrt(complex((p1 + p2 + p3) / 6)) * Δd
+    return ifelse(isreal(iωm), iωm, 1e-5)
 end
 
 function LP_lobe(n, ξd, R, d)
