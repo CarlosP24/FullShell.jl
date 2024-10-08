@@ -111,5 +111,5 @@ function get_itip(wire::Params_mm)
     Φ(B) = B * area_LP * conv
     n(B) = round(Int, Φ(B))
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
-    return B -> itip(Δ0, Λ(B)) * 0.99
+    return B -> real(itip(Δ0, Λ(B))) * 0.99
 end
