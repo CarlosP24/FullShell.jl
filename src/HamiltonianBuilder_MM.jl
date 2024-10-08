@@ -104,6 +104,12 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     return hSM, hSC, p
 end
 
+bandwidth(; kw...) = bandwidth(Params_mm(; kw...))
+function bandwidth(p::Params_mm)
+    @unpack ħ2ome, μ, m0, a0 = p
+    return max(abs(4*ħ2ome/(2m0*a0^2) - μ), abs(-4*ħ2ome/(2m0*a0^2) - μ))
+end
+
 get_itip(; kw...) = get_itip(Params_mm(; kw...))
 function get_itip(wire::Params_mm)
     @unpack R, d, conv, Δ0, ξd, R, d  = wire
