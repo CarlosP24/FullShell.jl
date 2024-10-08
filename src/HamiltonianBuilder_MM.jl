@@ -106,10 +106,10 @@ end
 
 get_itip(; kw...) = get_itip(Params_mm(; kw...))
 function get_itip(wire::Params_mm)
-    @unpack R, d, conv = wire
+    @unpack R, d, conv, Δ0, ξd, R, d  = wire
     area_LP = π * (R + d/2)^2
     Φ(B) = B * area_LP * conv
     n(B) = round(Int, Φ(B))
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
-    return B -> itip(Δ0, Λ(B))
+    return B -> itip(Δ0, Λ(B)) * 0.99
 end
