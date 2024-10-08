@@ -4,7 +4,7 @@ using Quantica
 using Parameters
 using Roots
 
-export build_cyl, build_cyl_mm, ΣS3DUsadel, pairbreaking, LP_lobe, ΔΛ, itip
+export build_cyl, build_cyl_mm, ΣS3DUsadel, pairbreaking, LP_lobe, ΔΛ
 
 export Params, Params_mm
 
