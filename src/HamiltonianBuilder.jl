@@ -15,7 +15,7 @@
     w = 10                              #width of the semiconductor
     d = 10                              #wdith of the superconductor
     Vmax = 0                            #dome profile parameters
-    Vmin = 0
+    Vmin = Vmax
     Vexponent = 2
     Δ0::ComplexF64 = 0.2 
     ξd = 70 
@@ -26,7 +26,9 @@
     ishollow::Bool = true
     L = 100                             #length of the cylinder
     Usadel::Bool = true
-    iω = 1e-4
+    Lstep = 0                           #Length of the depleaded potential region
+    Vshift = 0                          #Shift of the potential
+    ς = Lstep/a0
 end
 
 # Hamiltonian constructor 
@@ -38,7 +40,7 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, ishollow, Usadel, iω  = p 
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, ishollow, Usadel, ς, Lstep, Vshift  = p 
 
     # Lattice
 
@@ -57,8 +59,10 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
+    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
+    Vx(x, Vleft, Vright) = Vleft + (Vright - Vleft) * step(x - Lstep)
     dϕ(ρ, v0, v1) = - (Vexponent/R) * (v1 - v0) * (ρ/R)^(Vexponent - 1) # ϕ = -V
-    potential = @onsite((r; Vmax = Vmax, Vmin = Vmin) -> σ0τz * V(r[2], Vmax, Vmin))
+    potential = @onsite((r; Vmax = Vmax, Vmin = Vmin, Vshift = Vshift) -> σ0τz * Vx(r[1], V(r[2], Vmax, Vmin) - Vshift, V(r[2], Vmax, Vmin)))
 
     # Linear SOC
     rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * a0^2)) * σyτz; range = a0)

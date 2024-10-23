@@ -25,6 +25,9 @@
     σ = 0                               #Noise parameter, unused here but useful for further constructions
     Usadel::Bool = true
     iω = 1e-4
+    Lstep = 0
+    μshift = 0
+    ς = Lstep/a0
 
     # unneccesary here, but needed for legacy code 
     preα = 0
@@ -38,7 +41,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, Usadel, iω = p
+    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, Usadel, iω, ς, Lstep, µshift = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -49,9 +52,12 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     # Model
     # Kinetic term
+    # μ(x)
+    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
+    μx(x, μL, μR) = μL + (μR - μL) * step(x - Lstep)
     # Allow t-hopping only through the length dimension
     ishopz(dr) = iszero(dr[2])
-    p2 = @onsite((; μ = μ) -> σ0τz * (2.0 * t - μ)) + hopping((r, dr) -> -t * σ0τz; range = a0, region = (r, dr) -> ishopz(dr))
+    p2 = @onsite((r; μ = μ, µshift = µshift) -> σ0τz * (2.0 * t - μx(r[1], µ - µshift, µ))) + hopping((r, dr) -> -t * σ0τz; range = a0, region = (r, dr) -> ishopz(dr))
 
     # Lienear SOC 
     rashba = @hopping((r, dr; α = α) -> α * (im * dr[1] / (2a0^2)) * σyτz; range = a0, region = (r, dr) -> ishopz(dr))
