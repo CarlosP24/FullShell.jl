@@ -135,3 +135,9 @@ function get_itip(wire::Params)
   Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
   return B -> real(itip(Δ0, Λ(B))) * 0.99
 end
+
+function get_Φ(wire::Params)
+  @unpack R, d, conv  = wire
+  area_LP = π * (R + d/2)^2
+  return B -> B * area_LP * conv
+end
