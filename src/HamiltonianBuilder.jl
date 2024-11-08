@@ -29,6 +29,10 @@
     Lstep = 0                           #Length of the depleaded potential region
     Vshift = 0                          #Shift of the potential
     ς = Lstep/a0
+    Z = 0
+
+    # unneccesary here, but needed for legacy code
+    num_mJ = 5
 end
 
 # Hamiltonian constructor 
@@ -76,7 +80,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     n(Φ) = ifelse(nforced === nothing, round(Int, Φ), nforced)
     mJ(Z, Φ) = Z + ifelse(iseven(n(Φ)), 0.5, 0.0)
     J(Z, Φ) = mJ(Z, Φ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ) * σ0τz 
-    gauge = @onsite((r; Φ = Φ, Z = 0, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
+    gauge = @onsite((r; Φ = Φ, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
           σ0τz * (σ0τz * eAφ(r, Φ) + J(Z, Φ) / r[2])^2 * t * a0^2 -
           σzτz * (σ0τz * eAφ(r, Φ) + J(Z, Φ) / r[2]) * (α + preα * dϕ(r[2], Vmax, Vmin)) 
     ) 
