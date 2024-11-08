@@ -31,8 +31,10 @@
     ς = Lstep/a0
     Z = 0
 
+
     # unneccesary here, but needed for legacy code
     num_mJ = 5
+    iω = 1e-5
 end
 
 # Hamiltonian constructor 
