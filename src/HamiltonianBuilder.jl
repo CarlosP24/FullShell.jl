@@ -121,7 +121,6 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     return hSM, hSC, p
 end
 
-bandwidth(; kw...) = bandwidth(Params(; kw...))
 function bandwidth(p::Params)
     @unpack ħ2ome, μ, m0, a0 = p
     return max(abs(4*ħ2ome/(2m0*a0^2) - μ), abs(-4*ħ2ome/(2m0*a0^2) - μ))
