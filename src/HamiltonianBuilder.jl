@@ -35,7 +35,7 @@
     # unneccesary here, but needed for legacy code
     num_mJ = 5
     iω = 1e-5
-    Zs::Range = -5:5
+    Zs::Union{UnitRange, StepRangeLen}= -5:5
 end
 
 # Hamiltonian constructor 
