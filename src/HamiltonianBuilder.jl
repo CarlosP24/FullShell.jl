@@ -36,6 +36,7 @@
     num_mJ = 5
     iω = 1e-5
     Zs::Union{UnitRange, StepRangeLen}= -5:5
+    conv = 1.5193e-3 # Magnetic field in T to flux prefactor
 end
 
 # Hamiltonian constructor 
@@ -124,4 +125,13 @@ end
 function bandwidth(p::Params)
     @unpack ħ2ome, μ, m0, a0 = p
     return max(abs(4*ħ2ome/(2m0*a0^2) - μ), abs(-4*ħ2ome/(2m0*a0^2) - μ))
+end
+
+function get_itip(wire::Params)
+  @unpack R, d, conv, Δ0, ξd, R, d  = wire
+  area_LP = π * (R + d/2)^2
+  Φ(B) = B * area_LP * conv
+  n(B) = round(Int, Φ(B))
+  Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
+  return B -> real(itip(Δ0, Λ(B))) * 0.99
 end
