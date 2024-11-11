@@ -27,7 +27,8 @@
     L = 100                             #length of the cylinder
     Usadel::Bool = true
     Lstep = 0                           #Length of the depleaded potential region
-    Vshift = 0                          #Shift of the potential
+    Vshift = 0                          #Shift of the conduction band across the z direction
+    μshift = 0                          #Shift of the chemical potential  across the z direction
     ς = Lstep/a0
     Z = 0
 
@@ -61,13 +62,15 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
           end
 
     # Model
+    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
 
     # Kinetic term
-    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow) - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
+    μx(x, μL, μR) = μL + (μR - μL) * step(x - Lstep)
+    p2 = @onsite((r; μ = μ, µshift = µshift) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow)  - μx(r[1], µ - µshift, µ))) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
-    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
+
     Vx(x, Vleft, Vright) = Vleft + (Vright - Vleft) * step(x - Lstep)
     dϕ(ρ, v0, v1) = - (Vexponent/R) * (v1 - v0) * (ρ/R)^(Vexponent - 1) # ϕ = -V
     potential = @onsite((r; Vmax = Vmax, Vmin = Vmin, Vshift = Vshift) -> σ0τz * Vx(r[1], V(r[2], Vmax, Vmin) - Vshift, V(r[2], Vmax, Vmin)))
