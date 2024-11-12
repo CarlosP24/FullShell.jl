@@ -36,7 +36,7 @@
     # unneccesary here, but needed for legacy code
     num_mJ = 5
     iω = 1e-5
-    Zs::Union{UnitRange, StepRangeLen}= -5:5
+    Zs::Union{UnitRange, Int}= -5:5
     conv = 1.5193e-3 # Magnetic field in T to flux prefactor
 end
 
