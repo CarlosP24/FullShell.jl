@@ -25,7 +25,7 @@
     Φ = 1                               #flux normalized to the flux quantum always
     ishollow::Bool = true
     L = 100                             #length of the cylinder
-    shell = "Usadel"
+    shell::String = "Usadel"
     Lstep = 0                           #Length of the depleaded potential region
     Vshift = 0                          #Shift of the conduction band across the z direction
     μshift = 0                          #Shift of the chemical potential  across the z direction
