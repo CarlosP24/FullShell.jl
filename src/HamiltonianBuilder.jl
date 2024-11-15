@@ -40,8 +40,8 @@
 end
 
 # Hamiltonian constructor 
-ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
-ΣS3DBallistic(Δ0, Λ, ω;) = - Δ0 *( (ω/Ω(Λ, Δ0)) * σ0τ0 - σ0τx) / sqrt(complex(1-(ω/Ω(Λ, Δ0))^2))
+ΣS3DUsadel(Δ0, Λ, ω;) = ifelse(iszero(Δ0), -im *σ0τ0, - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2)))
+ΣS3DBallistic(Δ0, Λ, ω;) = ifelse(iszero(Δ0), -im * σ0τ0, - Δ0 *( (ω/Ω(Λ, Δ0)) * σ0τ0 - σ0τx) / sqrt(complex(1-(ω/Ω(Λ, Δ0))^2)))
 #ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(usimple(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-usimple(Δ0, Λ, ω)^2))
 ΣΔ(Δ0, Λ, ω;) = (ΔD(Λ, Δ0)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
 Uphase(phase) = exp(im * phase * σ0τz /2)
@@ -107,7 +107,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
       ΣS = ΣΔ
     end
 
-    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
+    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, Δ0 = Δ0) ->
           o +  τΓ * ΣS(Δ0, Λ(Φ), ω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
