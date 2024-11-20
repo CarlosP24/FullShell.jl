@@ -28,6 +28,7 @@ end
 
 @with_kw struct params_shift @deftype Float64
     L = 500
+    Lstep = 0.5 * L
     ς = 0.1 * L
     μshift = 0
 end
@@ -53,8 +54,8 @@ Apply a smooth step-like chemical potential shift to a 1D Hamiltonian.
 """
 mu_step(h; kw...) = mu_step(h, params_shift(; kw...))
 function mu_step(h::Quantica.AbstractHamiltonian1D, p::params_shift)
-    @unpack L, ς, μshift = p
+    @unpack L, Lstep, ς, μshift = p
     step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
-    μx(x) = μshift * (1 - step(x - L/2))
+    μx(x) = μshift * (1 - step(x - Lstep))
     return mux(h, μx, L)
 end
