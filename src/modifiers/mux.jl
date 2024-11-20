@@ -46,6 +46,7 @@ Apply a smooth step-like chemical potential shift to a 1D Hamiltonian.
 
 # Keyword Arguments
 - `L::Real`: The length of the 0D supercell (default: 500).
+- `Lstep::Real`: The position of the step (default: 0.5*L).
 - `ς::Real`: The smoothness parameter of the step function (default: 0.1*L).
 - `μshift::Real`: The magnitude of the chemical potential shift (default: 0).
 
