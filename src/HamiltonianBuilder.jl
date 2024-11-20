@@ -26,10 +26,6 @@
     ishollow::Bool = true
     L = 100                             #length of the cylinder
     shell::String = "Usadel"
-    Lstep = 0                           #Length of the depleaded potential region
-    Vshift = 0                          #Shift of the conduction band across the z direction
-    μshift = 0                          #Shift of the chemical potential  across the z direction
-    ς = Lstep/a0
     Z = 0
 
     # unneccesary here, but needed for legacy code
@@ -49,7 +45,7 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, μshift, τΓ, Φ, Z, ishollow, shell, ς, Lstep, Vshift  = p 
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, Z, ishollow, shell = p 
 
     # Lattice
 
@@ -62,18 +58,14 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
           end
 
     # Model
-    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
 
     # Kinetic term
-    μx(x, μL, μR) = μL + (μR - μL) * step(x - Lstep)
-    p2 = @onsite((r; μ = μ, µshift = µshift) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow)  - μx(r[1], µ - µshift, µ))) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
+    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow)  - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
-
-    Vx(x, Vleft, Vright) = Vleft + (Vright - Vleft) * step(x - Lstep)
     dϕ(ρ, v0, v1) = - (Vexponent/R) * (v1 - v0) * (ρ/R)^(Vexponent - 1) # ϕ = -V
-    potential = @onsite((r; Vmax = Vmax, Vmin = Vmin, Vshift = Vshift) -> σ0τz * Vx(r[1], V(r[2], Vmax, Vmin) - Vshift, V(r[2], Vmax, Vmin)))
+    potential = @onsite((r; Vmax = Vmax, Vmin = Vmin, ) -> σ0τz * V(r[2], Vmax, Vmin))
 
     # Linear SOC
     rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * a0^2)) * σyτz; range = a0)
