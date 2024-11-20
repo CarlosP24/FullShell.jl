@@ -51,7 +51,6 @@ Apply a smooth step-like chemical potential shift to a 1D Hamiltonian.
 # Returns
 - The modified Hamiltonian.
 """
-
 mu_step(h; kw...) = mu_step(h, params_shift(; kw...))
 function mu_step(h::Quantica.AbstractHamiltonian1D, p::params_shift)
     @unpack L, ς, μshift = p
