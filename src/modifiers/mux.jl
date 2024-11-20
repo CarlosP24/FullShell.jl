@@ -21,14 +21,14 @@ function mux(h::Quantica.AbstractHamiltonian1D, f::Function, L::Real;)
         throw(ArgumentError("f must be a function of one positional variable"))
     end
     hf = h |> supercell(region = r -> 0 <= r[1] <= L)
-    mod! = @onsite!((o, r) -> o + f(r[1]/L) * σ0τz)
+    mod! = @onsite!((o, r) -> o + f(r[1]) * σ0τz)
     return hf |> mod!
 end
 
 
 @with_kw struct params_shift @deftype Float64
     L = 500
-    ς = 0.1
+    ς = 0.1 * L
     μshift = 0
 end
 
