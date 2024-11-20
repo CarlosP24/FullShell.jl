@@ -55,6 +55,6 @@ mu_step(h; kw...) = mu_step(h, params_shift(; kw...))
 function mu_step(h::Quantica.AbstractHamiltonian1D, p::params_shift)
     @unpack L, ς, μshift = p
     step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
-    μx(x) = μshift * (1 - step(x - 1/2))
+    μx(x) = μshift * (1 - step(x - L/2))
     return mux(h, μx, L)
 end
