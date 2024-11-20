@@ -6,7 +6,7 @@ The wire is assumed to be 1D in the r[1] direction.
 
 # Arguments
 - `h::Quantica.AbstractHamiltonian1D`: The 1D Hamiltonian to be modified.
-- `f::Function`: A function of one positional variable normalized to L to be applied to the onsite terms.
+- `f::Function`: A function of one positional variable to be applied to the onsite terms.
 - `L::Real`: The length of the 0D supercell.
 
 # Throws
