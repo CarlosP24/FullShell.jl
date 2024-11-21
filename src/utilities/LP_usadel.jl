@@ -3,7 +3,7 @@ include("AbrikosovSolver.jl")
 function pairbreaking(Φ, n, Δ0, ξd, R, d)
     RLP = R + d/2
     Λ = ξd^2 * Δ0 / (1.76 * π * RLP^2) * (4 * (Φ - n)^2 + d^2 / RLP^2 * (Φ^2 + (n^2)/3))
-    return Λ
+    return maximum([Λ, 1.5e-4])
 end
 
 

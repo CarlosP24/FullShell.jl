@@ -51,6 +51,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     R = floor(R/a0)*a0
     lat = if ishollow
+      
             Rav = R - w/2
             LP.square(; a0) |> supercell((1, 0)) |> Quantica.transform!(r -> r + SA[0, Rav])
           else
