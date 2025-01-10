@@ -23,7 +23,7 @@
     ξd = 70
     L = 0
     σ = 0                               #Noise parameter, unused here but useful for further constructions
-    Usadel::Bool = true
+    shell::String = "Usadel"
     iω = 1e-4
 
     # unneccesary here, but needed for legacy code 
