@@ -58,7 +58,11 @@ function itip(Δ0, Λ)
     x = Λ/Δd
     p1 = -4 + 4*x^2
     n2 = 2 * 2^(1/3) * (1 - 47 * x^2 + x^4)
-    d2 = complex(2 + 345 * x^2 - 345 * x^4 - 2 * x^6 + 9 * sqrt(3) * x * (1 + x^2) * sqrt(8 + 359 * x^2 + 8 * x^4))^(1/3)
+    d2 = try
+        (2 + 345 * x^2 - 345 * x^4 - 2 * x^6 + 9 * sqrt(3) * x * (1 + x^2) * sqrt(8 + 359 * x^2 + 8 * x^4))^(1/3) 
+    catch
+        @error "Itip is complex. Integration path not valid"
+    end
     p2 = n2 / d2
     p3 = 2^(2/3) * d2
     iωm =  sqrt(complex((p1 + p2 + p3) / 6)) * Δd
