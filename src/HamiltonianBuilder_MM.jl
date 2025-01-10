@@ -38,7 +38,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, Usadel, iω = p
+    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -82,8 +82,10 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     # Superconductor
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
 
-    if Usadel 
+    if shell == "Usadel"
         ΣS = ΣS3DUsadel
+      elseif shell == "Ballistic"
+        ΣS = ΣS3DBallistic
       else
         ΣS = ΣΔ
       end
