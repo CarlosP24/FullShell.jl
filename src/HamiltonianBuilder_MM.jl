@@ -38,7 +38,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv,μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω = p
+    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -121,4 +121,16 @@ function get_itip(wire::Params_mm)
     n(B) = round(Int, Φ(B))
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
     return B -> real(itip(Δ0, Λ(B))) * 0.99
+end
+
+function get_Φ(wire::Params_mm)
+    @unpack R, d, conv  = wire
+    area_LP = π * (R + d/2)^2
+    return B -> B * area_LP * conv
+end
+
+function get_B(wire::Params_mm)
+    @unpack R, d, conv  = wire
+    area_LP = π * (R + d/2)^2
+    return Φ -> Φ / (area_LP * conv)
 end
