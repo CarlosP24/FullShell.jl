@@ -49,9 +49,6 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     # Model
     # Kinetic term
-    # μ(x)
-    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
-    μx(x, μL, μR) = μL + (μR - μL) * step(x - Lstep)
     # Allow t-hopping only through the length dimension
     ishopz(dr) = iszero(dr[2])
     p2 = @onsite((r; μ = μ) -> σ0τz * (2.0 * t - μ)) + hopping((r, dr) -> -t * σ0τz; range = a0, region = (r, dr) -> ishopz(dr))
