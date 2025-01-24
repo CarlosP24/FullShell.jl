@@ -132,7 +132,7 @@ function get_B(wire::Params_mm)
     return Φ -> Φ / (area_LP * conv)
 end
 
-function build_harmonic_deformations(wire::Paramns_mm, harmonics::Dict{Int, Complex})
+function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
     @unpack R, w, d, conv, echarge, a0, t = wire
 
     # Hamiltonian utilities
