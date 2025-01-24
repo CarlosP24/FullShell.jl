@@ -131,3 +131,31 @@ function get_B(wire::Params_mm)
     area_LP = π * (R + d/2)^2
     return Φ -> Φ / (area_LP * conv)
 end
+
+function build_harmonic_deformations(wire::Paramns_mm, harmonics::Dict{Int, Complex})
+    @unpack R, w, d, conv, echarge, a0, t = wire
+
+    # Hamiltonian utilities
+    area_LP = π * (R + d/2)^2
+    Rav = R - w/2
+    eAφ = echarge * 0.5 * B * Rav * π * conv
+    Φ(B) = B * area_LP * conv
+    n(B) = round(Int, Φ(B))
+    mJ(r, B) = r[2]/a0 + ifelse(iseven(n(B)), 0.5, 0)
+    J(r, B) = mJ(r, B) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(B) * σ0τz
+
+    # Mode mixing utilities
+    ℓ(dr) = round(Int, dr[2]/a0 |> abs)
+    ishopm(dr) = iszero(dr[1])
+    δRp(dr) = get(harmonics, ℓ(dr), 0)
+    δR(dr) = ifelse(dr[2] > 0, δRp(dr), conj(δRp(dr)))
+
+    # Mode mixers
+    k_mixer(r, dr, B) = - t * a0^2 * δR(dr) * (J(r, B)^2 / Rav^2 + 0.25 * ℓ(dr)^2 * σ0τ0 / Rav^2 - eAφ(B)^2 * σ0τ0) * σ0τz
+    α_mixer(r, dr, B) = - (α / 2) * δR(dr) * (J(r, B) / Rav - eAφ(B) * σ0τz) * σzτz
+
+    return @hopping!((t, r, dr; B = 0) ->
+        t + k_mixer(r, dr, B) + α_mixer(r, dr, B),
+        range = 2 * a0 * length(harmonics), region = (r, dr) -> ishopm(dr)
+    )
+end

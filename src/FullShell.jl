@@ -4,7 +4,7 @@ using Quantica
 using Parameters
 using Roots
 
-export build_cyl, build_cyl_mm, ΣS3DUsadel, pairbreaking, LP_lobe, ΔΛ, get_itip, bandwidth, get_Φ, get_B
+export build_cyl, build_cyl_mm, ΣS3DUsadel, pairbreaking, LP_lobe, ΔΛ, get_itip, bandwidth, get_Φ, get_B, build_harmonic_deformations
 
 export mux, mu_step
 
