@@ -143,3 +143,8 @@ function get_B(wire::Params)
   area_LP = π * (R + d/2)^2
   return Φ -> Φ / (area_LP * conv)
 end
+
+function get_Ω(wire::Params)
+  @unpack Δ0, ξd, R, d  = wire
+  return Φ -> Ω(pairbreaking(Φ, round(Int, Φ), Δ0, ξd, R, d), Δ0)
+end

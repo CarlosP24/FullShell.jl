@@ -132,6 +132,12 @@ function get_B(wire::Params_mm)
     return Φ -> Φ / (area_LP * conv)
 end
 
+function get_Ω(wire::Params_mm)
+    @unpack Δ0, ξd, R, d  = wire
+    Φ = get_Φ(wire)
+    return B -> Ω(pairbreaking(Φ(B), round(Int, Φ(B)), Δ0, ξd, R, d), Δ0)
+end
+
 function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
     @unpack R, w, d, conv, echarge, a0, t = wire
 
