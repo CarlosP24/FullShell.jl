@@ -25,6 +25,7 @@
     σ = 0                               #Noise parameter, unused here but useful for further constructions
     shell::String = "Usadel"
     iω = 1e-4
+    hops0::Bool = false
 
     # unneccesary here, but needed for legacy code 
     preα = 0
@@ -38,7 +39,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω = p
+    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω, hops0 = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -51,6 +52,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     # Kinetic term
     # Allow t-hopping only through the length dimension
     ishopz(dr) = iszero(dr[2])
+    ishopm(dr) = iszero(dr[1])
     p2 = @onsite((r; μ = μ) -> σ0τz * (2.0 * t - μ)) + hopping((r, dr) -> -t * σ0τz; range = a0, region = (r, dr) -> ishopz(dr))
 
     # Lienear SOC 
@@ -72,9 +74,15 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
         σzτz * (σ0τz * eAφ(B) + J(r, B)/Rav) * α
     )
 
+    mJ_hop = hopping((r, dr) -> 0*σ0τ0, range = 3*num_mJ*a0, region = (r, dr) -> ishopm(dr))
+
     # SM hamiltonian 
 
-    hSM = lat |> hamiltonian(p2 + rashba + zeeman + gauge; orbitals = Val(4))
+    model = p2 + rashba + zeeman + gauge
+    if hops0
+        model = model + mJ_hop
+    end
+    hSM = lat |> hamiltonian(model; orbitals = Val(4))
 
     # Superconductor
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)

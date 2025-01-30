@@ -33,6 +33,7 @@
     iω = 1e-5
     Zs::Union{UnitRange, Vector{Int}, Int} = -5:5
     conv = 1.5193e-3 # Magnetic field in T to flux prefactor
+    hops0::Bool = false
 end
 
 # Hamiltonian constructor 
