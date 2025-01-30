@@ -34,6 +34,7 @@
     Zs::Union{UnitRange, Vector{Int}, Int} = -5:5
     conv = 1.5193e-3 # Magnetic field in T to flux prefactor
     hops0::Bool = false
+    range_hop_m = 0
 end
 
 # Hamiltonian constructor 

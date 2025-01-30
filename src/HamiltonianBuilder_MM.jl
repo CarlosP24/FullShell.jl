@@ -26,6 +26,7 @@
     shell::String = "Usadel"
     iω = 1e-4
     hops0::Bool = false
+    range_hop_m = 3 * num_mJ
 
     # unneccesary here, but needed for legacy code 
     preα = 0
@@ -39,7 +40,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω, hops0 = p
+    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω, hops0, range_hop_m  = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -74,7 +75,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
         σzτz * (σ0τz * eAφ(B) + J(r, B)/Rav) * α
     )
 
-    mJ_hop = hopping((r, dr) -> 0*σ0τ0, range = 3*num_mJ*a0, region = (r, dr) -> ishopm(dr))
+    mJ_hop = hopping((r, dr) -> 0*σ0τ0, range = range_hop_m * a0, region = (r, dr) -> ishopm(dr))
 
     # SM hamiltonian 
 
