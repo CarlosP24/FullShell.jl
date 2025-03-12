@@ -1,5 +1,7 @@
 # FullShell
-[![DOI](https://zenodo.org/badge/794025449.svg)](https://zenodo.org/doi/10.5281/zenodo.11450677)
+[![DOI](https://zenodo.org/badge/794025449.svg)](https://doi.org/10.5281/zenodo.11450677)
+
+
 
 Package to build full-shell hybrid semiconductor-superconductor hamiltonians.
 
