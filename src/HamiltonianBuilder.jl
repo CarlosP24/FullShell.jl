@@ -32,7 +32,7 @@
     num_mJ = 5
     iω = 1e-5
     Zs::Union{UnitRange, Vector{Int}, Int} = -5:5
-    conv = 1.5193e-3 # Magnetic field in T to flux prefactor
+    conv = 1.5193e-3 # Magnetic field in T to flux prefactor, e/ħ
     hops0::Bool = false
     range_hop_m = 0
 end
@@ -136,13 +136,13 @@ end
 
 function get_Φ(wire::Params)
   @unpack R, d, conv  = wire
-  area_LP = π * (R + d/2)^2
+  area_LP = (R + d/2)^2           # π is included in conv!!!!!
   return B -> B * area_LP * conv
 end
 
 function get_B(wire::Params)
-  @unpack R, d, conv  = wire
-  area_LP = π * (R + d/2)^2
+  @unpack R, d, conv = wire
+  area_LP = (R + d/2)^2         # π is included in conv!!!!!
   return Φ -> Φ / (area_LP * conv)
 end
 

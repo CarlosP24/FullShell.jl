@@ -90,11 +90,11 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     if shell == "Usadel"
         ΣS = ΣS3DUsadel
-      elseif shell == "Ballistic"
+    elseif shell == "Ballistic"
         ΣS = ΣS3DBallistic
-      else
+    else
         ΣS = ΣΔ
-      end
+    end
 
     ΣS! = @onsite!((o, r; ω = 0, B = B, τΓ = τΓ) ->
             o +  τΓ * ΣS(Δ0, Λ(B), ω);
