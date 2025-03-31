@@ -14,6 +14,7 @@
     R = 70                              #radius of the cylinder
     w = 10                              #width of the semiconductor
     d = 10                              #wdith of the superconductor
+    RLP2 = (R + d/2)^2
     Vmax = 0                            #dome profile parameters
     Vmin = Vmax
     Vexponent = 2
@@ -32,7 +33,7 @@
     num_mJ = 5
     iω = 1e-5
     Zs::Union{UnitRange, Vector{Int}, Int} = -5:5
-    conv = 1.5193e-3 # Magnetic field in T to flux prefactor, e/ħ
+    πoΦ0 = 1.5193e-3                  # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
     hops0::Bool = false
     range_hop_m = 0
 end
@@ -47,11 +48,13 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, Z, ishollow, shell = p 
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, RLP2, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, Z, ishollow, shell = p 
 
     # Lattice
 
     R = floor(R/a0)*a0
+    area_LP = π * RLP2 
+
     lat = if ishollow
       
             Rav = R - w/2
@@ -77,7 +80,6 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     zeeman = @onsite((; Φ = Φ) -> σzτ0 * 0.5 * g * μBΦ0 * Φ / area_LP)
 
     # Magnetic field
-    area_LP = π * (R + d/2)^2 
     eAφ(r, Φ) = echarge * 0.5 * π * Φ * r[2] / area_LP
     n(Φ) = ifelse(nforced === nothing, round(Int, Φ), nforced)
     mJ(Z, Φ) = Z + ifelse(iseven(n(Φ)), 0.5, 0.0)
@@ -128,22 +130,20 @@ function bandwidth(p::Params)
 end
 
 function get_itip(wire::Params)
-  @unpack R, d, conv, Δ0, ξd, R, d  = wire
+  @unpack R, d, Δ0, ξd, R, d  = wire
   n(Φ) = round(Int, Φ)
   Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
   return Φ -> real(itip(Δ0, Λ(Φ))) * 0.99
 end
 
 function get_Φ(wire::Params)
-  @unpack R, d, conv  = wire
-  area_LP = (R + d/2)^2           # π is included in conv!!!!!
-  return B -> B * area_LP * conv
+  @unpack RLP2, πoΦ0  = wire
+  return B -> B * RLP2 * πoΦ0
 end
 
 function get_B(wire::Params)
-  @unpack R, d, conv = wire
-  area_LP = (R + d/2)^2         # π is included in conv!!!!!
-  return Φ -> Φ / (area_LP * conv)
+  @unpack RLP2, πoΦ0 = wire
+  return Φ -> Φ / (RLP2 * πoΦ0)
 end
 
 function get_Ω(wire::Params)

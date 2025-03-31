@@ -4,7 +4,7 @@
 
 @with_kw struct Params_mm @deftype Float64
     ħ2ome = 76.1996
-    conv = 1.5193e-3 # Magnetic field in T to flux prefactor
+    πoΦ0 = 1.5193e-3                    # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
     μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
     m0 = 0.023
     a0 = 5
@@ -13,6 +13,7 @@
     R = 70
     w = 10
     d = 10
+    RLP2 = (R + d/2)^2
     num_mJ = 5
     α = 0
     μ = 0
@@ -40,7 +41,7 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack conv, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω, hops0, range_hop_m  = p
+    @unpack πoΦ0, μBΦ0, a0, t, echarge, R, w, d, RLP2, num_mJ, α, μ, g, τΓ, B, Δ0, ξd, shell, iω, hops0, range_hop_m  = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
@@ -60,12 +61,11 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     rashba = @hopping((r, dr; α = α) -> α * (im * dr[1] / (2a0^2)) * σyτz; range = a0, region = (r, dr) -> ishopz(dr))
 
     # g - Zeeman 
-    zeeman = @onsite((; B = B) -> σzτ0 * 0.5 * g * μBΦ0 * conv * B)
+    zeeman = @onsite((; B = B) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B)
 
     # Magnetic field
-    area_LP = π * (R + d/2)^2
-    eAφ(B) = echarge * 0.5 * B * Rav * π * conv
-    Φ(B) = B * area_LP * conv
+    eAφ(B) = echarge * 0.5 * B * Rav * πoΦ0
+    Φ(B) = B * RLP2 * πoΦ0
     n(B) = round(Int, Φ(B))
     mJ(r, B) = r[2]/a0 + ifelse(iseven(n(B)), 0.5, 0)
     J(r, B) = mJ(r, B)*σ0τ0 - 0.5*σzτ0 - 0.5*n(B)*σ0τz
@@ -121,24 +121,22 @@ function bandwidth(p::Params_mm)
 end
 
 function get_itip(wire::Params_mm)
-    @unpack R, d, conv, Δ0, ξd, R, d  = wire
-    area_LP = π * (R + d/2)^2
-    Φ(B) = B * area_LP * conv
+    @unpack R, d, RLP2, πoΦ0, Δ0, ξd, R, d  = wire
+    RLP2 = (R + d/2)^2
+    Φ(B) = B * RLP2 * πoΦ0
     n(B) = round(Int, Φ(B))
     Λ(B) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d)
     return B -> real(itip(Δ0, Λ(B))) * 0.99
 end
 
 function get_Φ(wire::Params_mm)
-    @unpack R, d, conv  = wire
-    area_LP = π * (R + d/2)^2
-    return B -> B * area_LP * conv
+    @unpack RLP2, πoΦ0  = wire
+    return B -> B * RLP2 * πoΦ0
 end
 
 function get_B(wire::Params_mm)
-    @unpack R, d, conv  = wire
-    area_LP = π * (R + d/2)^2
-    return Φ -> Φ / (area_LP * conv)
+    @unpack RLP2 πoΦ0  = wire
+    return Φ -> Φ / (RLP2 * πoΦ0)
 end
 
 function get_Ω(wire::Params_mm)
@@ -148,13 +146,12 @@ function get_Ω(wire::Params_mm)
 end
 
 function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
-    @unpack R, w, d, conv, echarge, a0, t = wire
+    @unpack R, w, RLP2, πoΦ0, echarge, a0, t = wire
 
     # Hamiltonian utilities
-    area_LP = π * (R + d/2)^2
     Rav = R - w/2
-    eAφ = echarge * 0.5 * B * Rav * π * conv
-    Φ(B) = B * area_LP * conv
+    eAφ = echarge * 0.5 * B * Rav * π * πoΦ0
+    Φ(B) = B * RLP2 * πoΦ0
     n(B) = round(Int, Φ(B))
     mJ(r, B) = r[2]/a0 + ifelse(iseven(n(B)), 0.5, 0)
     J(r, B) = mJ(r, B) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(B) * σ0τz
