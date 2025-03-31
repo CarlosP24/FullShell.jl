@@ -135,7 +135,7 @@ function get_Φ(wire::Params_mm)
 end
 
 function get_B(wire::Params_mm)
-    @unpack RLP2 πoΦ0  = wire
+    @unpack RLP2, πoΦ0  = wire
     return Φ -> Φ / (RLP2 * πoΦ0)
 end
 
