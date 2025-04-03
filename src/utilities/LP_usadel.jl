@@ -27,9 +27,9 @@ end
 
 # Modified ps_sign so uUsadel is analitical in the full complex plane. 
 # WARNING: it is defined only for NEGATIVE frequencies.
-function ps_sign(x; iω = 1e-3)
-    #return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
-    return sign(real(x)) + iω*1im
+function ps_sign(x)
+    return real(x) < 0 ? -1.0 + imag(x)*im*1.0 : 1.0 + imag(x)*im*1.0
+    #return sign(real(x)) + iω*1im
 end
 
 function uUsadel_old(Δ0, Λ, ω)
