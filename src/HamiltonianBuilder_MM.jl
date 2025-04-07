@@ -150,7 +150,7 @@ function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Compl
 
     # Hamiltonian utilities
     Rav = R - w/2
-    eAφ = echarge * 0.5 * B * Rav * π * πoΦ0
+    eAφ(B) = echarge * 0.5 * B * Rav * π * πoΦ0
     Φ(B) = B * RLP2 * πoΦ0
     n(B) = round(Int, Φ(B))
     mJ(r, B) = r[2]/a0 + ifelse(iseven(n(B)), 0.5, 0)
