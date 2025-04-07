@@ -4,7 +4,7 @@
 
 @with_kw struct Params_mm @deftype Float64
     ħ2ome = 76.1996
-    πoΦ0 = 1.5193e-3                    # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
+    πoΦ0 = 1.519257e-3                    # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
     μBΦ0 = 119.6941183                  #Bohr magneton times magnetic flux quantum
     m0 = 0.023
     a0 = 5

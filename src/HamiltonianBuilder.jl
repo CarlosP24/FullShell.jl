@@ -33,7 +33,7 @@
     num_mJ = 5
     iω = 1e-5
     Zs::Union{UnitRange, Vector{Int}, Int} = -5:5
-    πoΦ0 = 1.5193e-3                  # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
+    πoΦ0 = 1.519267e-3                  # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
     hops0::Bool = false
     range_hop_m = 0
 end

@@ -49,7 +49,7 @@ function uUsadel(Δ0, Λ, ω)
     nun = complex(ω^2 - Δd^2 + Λ^2)
     rai = sqrt(complex(ω^2 - 2 * nun / 3 + nun^2 / (3 * pep) + pep / 3))
     usa = complex(ω / (2Δd) - rai / (2Δd) + sqrt(complex(2ω^2 - 4 * nun /3 - nun^2 / (3 * pep) - pep /3 + 2 * (Δd^2 + Λ^2) * ω / rai)) / (2Δd))
-    # Testing
+    # Guarantee analyticality in the full complex plane
     usa = real(usa) + abs(imag(usa)) * 1im
     return usa
 end
