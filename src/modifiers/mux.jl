@@ -21,7 +21,7 @@ function mux(h::Quantica.AbstractHamiltonian1D, f::Function, L::Real;)
         throw(ArgumentError("f must be a function of one positional variable"))
     end
     hf = h |> supercell(region = r -> 0 <= r[1] <= L)
-    mod! = @onsite!((o, r) -> o + f(r[1]) * σ0τz)
+    mod! = @onsite!((o, r; kw...) -> o + f(r[1]; kw...) * σ0τz)
     return hf |> mod!
 end
 
@@ -56,7 +56,7 @@ Apply a smooth step-like chemical potential shift to a 1D Hamiltonian.
 mu_step(h; kw...) = mu_step(h, params_shift(; kw...))
 function mu_step(h::Quantica.AbstractHamiltonian1D, p::params_shift)
     @unpack L, Lstep, ς, μshift = p
-    step(x) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
-    μx(x) = μshift * (1 - step(x - Lstep))
+    step(x; ς = ς) = ifelse(ς == 0, sign(x),  0.5 * (1 + tanh(x/ς)))
+    μx(x; µshift = µshift, ς = ς) = µshift * (1 - step(x - Lstep; ς = ς))
     return mux(h, μx, L)
 end
