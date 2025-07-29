@@ -1,12 +1,14 @@
 include("AbrikosovSolver.jl")
 
-function pairbreaking(Φ, n, Δ0, ξd, R, d)
+function pairbreaking(Φ, n, Δ0, ξd, R, d; θ = 0)
+    Φpar = Φ * cos(θ)
+    Φper = Φ * sin(θ)
     RLP = R + d/2
-    Λ = ξd^2 * Δ0 / (1.76 * π * RLP^2) * (4 * (Φ - n)^2 + d^2 / RLP^2 * (Φ^2 + (n^2)/3))
+    Λpar =  (4 * (Φpar - n)^2 + d^2 / RLP^2 * (Φpar^2 + (n^2)/3))
+    Λper = 4 * Φper^2
+    Λ = ξd^2 * Δ0 / (1.76 * π * RLP^2) * (Λpar +  Λper)
     return maximum([real(Λ), real(Δ0) * 1e-3])
 end
-
-
 
 function ΔD(Λ, Δ0)
     Δd = ΔΛ(real(Λ), real(Δ0))

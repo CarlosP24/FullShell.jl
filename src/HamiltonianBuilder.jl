@@ -78,24 +78,24 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * a0^2)) * σyτz; range = a0)
 
     # g - Zeeman
-    zeeman = @onsite((; Φ = Φ) -> σzτ0 * 0.5 * g * μBΦ0 * Φ / area_LP)
+    zeeman = @onsite((; Φ = Φ, θ = 0) -> σzτ0 * 0.5 * g * μBΦ0 * Φ * cos(θ) / area_LP)
 
     # Magnetic field
-    eAφ(r, Φ) = echarge * 0.5 * π * Φ * r[2] / area_LP
-    n(Φ) = ifelse(nforced === nothing, round(Int, Φ), nforced)
-    mJ(Z, Φ) = Z + ifelse(iseven(n(Φ)), 0.5, 0.0)
-    J(Z, Φ) = mJ(Z, Φ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ) * σ0τz 
-    gauge = @onsite((r; Φ = Φ, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
-          σ0τz * (σ0τz * eAφ(r, Φ) + J(Z, Φ) / r[2])^2 * t * a0^2 -
-          σzτz * (σ0τz * eAφ(r, Φ) + J(Z, Φ) / r[2]) * (α + preα * dϕ(r[2], Vmax, Vmin)) 
-    ) 
+    eAφ(r, Φ; θ = 0) = echarge * 0.5 * π * Φ * r[2] * cos(θ) / area_LP
+    n(Φ; θ = 0) = ifelse(nforced === nothing, round(Int, Φ * cos(θ)), nforced)
+    mJ(Z, Φ; θ = 0) = Z + ifelse(iseven(n(Φ; θ)), 0.5, 0.0)
+    J(Z, Φ; θ = 0) = mJ(Z, Φ; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ; θ) * σ0τz
+    gauge = @onsite((r; Φ = Φ, θ = 0, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
+          σ0τz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2])^2 * t * a0^2 -
+          σzτz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2]) * (α + preα * dϕ(r[2], Vmax, Vmin))
+    )
 
     # SM hamiltonian 
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
     # Superconductor
-    Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
+    Λ(Φ, θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
 
     if shell == "Usadel"
       ΣS = ΣS3DUsadel
@@ -107,8 +107,8 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
       ΣS = ΣΔ
     end
 
-    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ) ->
-          o +  τΓ * ΣS(Δ0, Λ(Φ), ω);
+    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = 0) ->
+          o +  τΓ * ΣS(Δ0, Λ(Φ, θ), ω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
@@ -134,9 +134,9 @@ end
 
 function get_itip(wire::Params)
   @unpack R, d, Δ0, ξd, R, d  = wire
-  n(Φ) = round(Int, Φ)
-  Λ(Φ) = pairbreaking(Φ, n(Φ), Δ0, ξd, R, d)
-  return Φ -> real(itip(Δ0, Λ(Φ))) * 0.99
+  n(Φ; θ = 0) = round(Int, Φ * cos(θ))
+  Λ(Φ; θ = 0) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
+  return Φ -> real(itip(Δ0, Λ(Φ; θ))) * 0.99
 end
 
 function get_Φ(wire::Params)
@@ -151,5 +151,5 @@ end
 
 function get_Ω(wire::Params)
   @unpack Δ0, ξd, R, d  = wire
-  return Φ -> Ω(pairbreaking(Φ, round(Int, Φ), Δ0, ξd, R, d), Δ0)
+  return (Φ; θ = 0) -> Ω(pairbreaking(Φ, round(Int, Φ * cos(θ)), Δ0, ξd, R, d; θ), Δ0)
 end
