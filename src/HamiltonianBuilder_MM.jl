@@ -143,7 +143,7 @@ end
 function get_Ω(wire::Params_mm)
     @unpack Δ0, ξd, R, d  = wire
     Φ = get_Φ(wire)
-    return (B, θ) -> Ω(pairbreaking(Φ(B), round(Int, Φ(B * cos(θ))), Δ0, ξd, R, d; θ = θ), Δ0)
+    return (B; θ = 0) -> Ω(pairbreaking(Φ(B), round(Int, Φ(B * cos(θ))), Δ0, ξd, R, d; θ = θ), Δ0)
 end
 
 function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
