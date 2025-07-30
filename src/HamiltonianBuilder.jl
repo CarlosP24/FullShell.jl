@@ -24,6 +24,7 @@
     μ = 0
     τΓ = 1
     Φ = 1                               #flux normalized to the flux quantum always
+    θ = 0                               #angle of the flux
     ishollow::Bool = true
     L = 100                             #length of the cylinder
     shell::String = "Usadel"
@@ -49,7 +50,7 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, RLP2, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, Z, ishollow, shell = p 
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, RLP2, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
 
     # Lattice
 
@@ -78,14 +79,14 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * a0^2)) * σyτz; range = a0)
 
     # g - Zeeman
-    zeeman = @onsite((; Φ = Φ, θ = 0) -> σzτ0 * 0.5 * g * μBΦ0 * Φ * cos(θ) / area_LP)
+    zeeman = @onsite((; Φ = Φ, θ = θ) -> σzτ0 * 0.5 * g * μBΦ0 * Φ * cos(θ) / area_LP)
 
     # Magnetic field
-    eAφ(r, Φ; θ = 0) = echarge * 0.5 * π * Φ * r[2] * cos(θ) / area_LP
-    n(Φ; θ = 0) = ifelse(nforced === nothing, round(Int, Φ * cos(θ)), nforced)
-    mJ(Z, Φ; θ = 0) = Z + ifelse(iseven(n(Φ; θ)), 0.5, 0.0)
-    J(Z, Φ; θ = 0) = mJ(Z, Φ; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ; θ) * σ0τz
-    gauge = @onsite((r; Φ = Φ, θ = 0, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
+    eAφ(r, Φ; θ = θ) = echarge * 0.5 * π * Φ * r[2] * cos(θ) / area_LP
+    n(Φ; θ = θ) = ifelse(nforced === nothing, round(Int, Φ * cos(θ)), nforced)
+    mJ(Z, Φ; θ = θ) = Z + ifelse(iseven(n(Φ; θ)), 0.5, 0.0)
+    J(Z, Φ; θ = θ) = mJ(Z, Φ; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ; θ) * σ0τz
+    gauge = @onsite((r; Φ = Φ, θ = θ, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
           σ0τz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2])^2 * t * a0^2 -
           σzτz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2]) * (α + preα * dϕ(r[2], Vmax, Vmin))
     )
@@ -107,7 +108,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
       ΣS = ΣΔ
     end
 
-    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = 0) ->
+    ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = θ) ->
           o +  τΓ * ΣS(Δ0, Λ(Φ, θ), ω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
@@ -133,9 +134,9 @@ function bandwidth(p::Params)
 end
 
 function get_itip(wire::Params)
-  @unpack R, d, Δ0, ξd, R, d  = wire
-  n(Φ; θ = 0) = round(Int, Φ * cos(θ))
-  Λ(Φ; θ = 0) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
+  @unpack R, d, Δ0, ξd, R, d, θ  = wire
+  n(Φ; θ = θ) = round(Int, Φ * cos(θ))
+  Λ(Φ; θ = θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
   return Φ -> real(itip(Δ0, Λ(Φ; θ))) * 0.99
 end
 
@@ -150,6 +151,6 @@ function get_B(wire::Params)
 end
 
 function get_Ω(wire::Params)
-  @unpack Δ0, ξd, R, d  = wire
-  return (Φ; θ = 0) -> Ω(pairbreaking(Φ, round(Int, Φ * cos(θ)), Δ0, ξd, R, d; θ), Δ0)
+  @unpack Δ0, ξd, R, d, θ = wire
+  return (Φ; θ = θ) -> Ω(pairbreaking(Φ, round(Int, Φ * cos(θ)), Δ0, ξd, R, d; θ), Δ0)
 end
