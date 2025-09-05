@@ -87,7 +87,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     hSM = lat |> hamiltonian(model; orbitals = Val(4))
 
     # Superconductor
-    Λ(B, θ) = pairbreaking(Φ(B), n(B), Δ0, ξd, R, d; θ = θ)
+    Λ(B, θ) = pairbreaking(Φ(B), n(B; θ), Δ0, ξd, R, d; θ = θ)
 
     if shell == "Usadel"
         ΣS = ΣS3DUsadel
