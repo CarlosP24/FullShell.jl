@@ -13,7 +13,6 @@
     R = 70
     w = 10
     d = 10
-    RLP2 = (R + d/2)^2
     num_mJ = 5
     α = 0
     μ = 0
@@ -42,11 +41,12 @@ end
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
-    @unpack πoΦ0, μBΦ0, a0, t, echarge, R, w, d, RLP2, num_mJ, α, μ, g, τΓ, B, θ, Δ0, ξd, shell, iω, hops0, range_hop_m  = p
+    @unpack πoΦ0, μBΦ0, a0, t, echarge, R, w, d, num_mJ, α, μ, g, τΓ, B, θ, Δ0, ξd, shell, iω, hops0, range_hop_m  = p
 
     # Lattice
     # Includes sites along the length of the wire + mJ sites in the transverse direction.
 
+    RLP2 = (R + d/2)^2
     R = floor(R/a0)*a0
     Rav = R - w/2 
     lat = LP.square(; a0) |> supercell((1,0), region = r -> abs(r[2]/a0) <= num_mJ)
@@ -69,6 +69,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     Φ(B; θ = θ) = B * cos(θ) * RLP2 * πoΦ0
     n(B; θ = θ) = round(Int, Φ(B; θ))
     mJ(r, B; θ = θ) = r[2]/a0 + ifelse(iseven(n(B; θ)), 0.5, 0)
+
     J(r, B; θ = θ) = mJ(r, B; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(B; θ) * σ0τz
 
     gauge = @onsite((r; B = B, α = α, θ = θ) -> 
@@ -122,7 +123,7 @@ function bandwidth(p::Params_mm)
 end
 
 function get_itip(wire::Params_mm)
-    @unpack R, d, RLP2, πoΦ0, Δ0, ξd, R, d, θ = wire
+    @unpack R, d, πoΦ0, Δ0, ξd, R, d, θ = wire
     RLP2 = (R + d/2)^2
     Φ(B) = B * RLP2 * πoΦ0
     n(B, θ) = round(Int, Φ(B * cos(θ)))
@@ -131,12 +132,14 @@ function get_itip(wire::Params_mm)
 end
 
 function get_Φ(wire::Params_mm)
-    @unpack RLP2, πoΦ0  = wire
+    @unpack R, d, πoΦ0  = wire
+    RLP2 = (R + d/2)^2
     return B -> B * RLP2 * πoΦ0
 end
 
 function get_B(wire::Params_mm)
-    @unpack RLP2, πoΦ0  = wire
+    @unpack R, d, πoΦ0  = wire
+    RLP2 = (R + d/2)^2
     return Φ -> Φ / (RLP2 * πoΦ0)
 end
 
@@ -147,9 +150,10 @@ function get_Ω(wire::Params_mm)
 end
 
 function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
-    @unpack R, w, RLP2, πoΦ0, echarge, a0, t, θ = wire
+    @unpack R, w, d, πoΦ0, echarge, a0, t, θ = wire
 
     # Hamiltonian utilities
+    RLP2 = (R + d/2)^2
     Rav = R - w/2
     eAφ(B; θ = θ) = echarge * 0.5 * B * cos(θ) * Rav * π * πoΦ0
     Φ(B; θ = θ) = B * cos(θ) * RLP2 * πoΦ0

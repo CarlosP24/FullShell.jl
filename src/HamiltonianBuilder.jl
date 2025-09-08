@@ -13,8 +13,7 @@
     echarge = 1
     R = 70                              #radius of the cylinder
     w = 10                              #width of the semiconductor
-    d = 10                              #wdith of the superconductor
-    RLP2 = (R + d/2)^2
+    d = 10                              #width of the superconductor
     Vmax = 0                            #dome profile parameters
     Vmin = Vmax
     Vexponent = 2
@@ -50,10 +49,10 @@ Uphase(phase) = exp(im * phase * σ0τz /2)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, RLP2, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
+    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
 
     # Lattice
-
+    RLP2 = (R + d/2)^2
     R = floor(R/a0)*a0
     area_LP = π * RLP2 
 
@@ -141,12 +140,14 @@ function get_itip(wire::Params)
 end
 
 function get_Φ(wire::Params)
-  @unpack RLP2, πoΦ0  = wire
+  @unpack R, d, πoΦ0  = wire
+  RLP2 = (R + d/2)^2
   return B -> B * RLP2 * πoΦ0
 end
 
 function get_B(wire::Params)
-  @unpack RLP2, πoΦ0 = wire
+  @unpack R, d, πoΦ0 = wire
+  RLP2 = (R + d/2)^2
   return Φ -> Φ / (RLP2 * πoΦ0)
 end
 

@@ -366,11 +366,11 @@ version = "2.11.1"
 
 [[deps.Quantica]]
 deps = ["Compat", "DelimitedFiles", "Dictionaries", "ExprTools", "FrankenTuples", "FunctionWrappers", "IntervalTrees", "LinearAlgebra", "NearestNeighbors", "ProgressMeter", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "StaticArrays", "Statistics", "SuiteSparse"]
-git-tree-sha1 = "2d01b779d4e99e99c858ae2c67c2e3f4fed60f99"
+git-tree-sha1 = "43d9c0d4260033ba0fad4ca0372a8537eb5850e7"
 repo-rev = "master"
 repo-url = "https://github.com/pablosanjose/Quantica.jl.git"
 uuid = "ae5ea0c6-3f5e-46a2-bc28-a7c4c7a4773c"
-version = "1.1.0"
+version = "1.2.0"
 
     [deps.Quantica.extensions]
     QuanticaArnoldiMethodExt = "ArnoldiMethod"
