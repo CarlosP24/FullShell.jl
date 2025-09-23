@@ -20,12 +20,7 @@ function ΔD(Λ, Δ0)
 end
 
 function Ω(Λ, Δ0)
-    try
-        gap = (ΔD(Λ, Δ0)^(2/3) -  Λ^(2/3))^(3/2)
-    catch e 
-        @warn "Gap is complex. Setting gap to 0. Original error: $e"
-        gap = 0
-    end
+    return real(complex((complex(ΔD(Λ, Δ0))^(2/3) -  complex(Λ)^(2/3)))^(3/2))
 end
 
 # function usimple(Δ0, Λ, ω)
