@@ -48,7 +48,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
 
     RLP2 = (R + d/2)^2
     R = floor(R/a0)*a0
-    Rav = R - w/2 
+    Rav(w) = R - w/2 
     lat = LP.square(; a0) |> supercell((1,0), region = r -> abs(r[2]/a0) <= num_mJ)
 
     # Model
@@ -65,16 +65,16 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     zeeman = @onsite((; B = B, θ = θ) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B * cos(θ))
 
     # Magnetic field
-    eAφ(B; θ = θ) = echarge * 0.5 * B * cos(θ) * Rav * πoΦ0
+    eAφ(B; θ = θ, w = w) = echarge * 0.5 * B * cos(θ) * Rav(w) * πoΦ0
     Φ(B; θ = θ) = B * cos(θ) * RLP2 * πoΦ0
     n(B; θ = θ) = round(Int, Φ(B; θ))
     mJ(r, B; θ = θ) = r[2]/a0 + ifelse(iseven(n(B; θ)), 0.5, 0)
 
     J(r, B; θ = θ) = mJ(r, B; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(B; θ) * σ0τz
 
-    gauge = @onsite((r; B = B, α = α, θ = θ) -> 
-        σ0τz * (σ0τz * eAφ(B; θ) + J(r, B; θ)/Rav)^2 * t * a0^2 -
-        σzτz * (σ0τz * eAφ(B; θ) + J(r, B; θ)/Rav) * α
+    gauge = @onsite((r; B = B, α = α, θ = θ, w = w) -> 
+        σ0τz * (σ0τz * eAφ(B; θ, w) + J(r, B; θ)/Rav(w))^2 * t * a0^2 -
+        σzτz * (σ0τz * eAφ(B; θ, w) + J(r, B; θ)/Rav(w)) * α
     )
 
     mJ_hop = hopping((r, dr) -> 0*σ0τ0, range = range_hop_m * a0, region = (r, dr) -> ishopm(dr))
@@ -154,8 +154,8 @@ function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Compl
 
     # Hamiltonian utilities
     RLP2 = (R + d/2)^2
-    Rav = R - w/2
-    eAφ(B; θ = θ) = echarge * 0.5 * B * cos(θ) * Rav * π * πoΦ0
+    Rav(w) = R - w/2
+    eAφ(B; θ = θ, w = w) = echarge * 0.5 * B * cos(θ) * Rav(w) * π * πoΦ0
     Φ(B; θ = θ) = B * cos(θ) * RLP2 * πoΦ0
     n(B; θ = θ) = round(Int, Φ(B * cos(θ)))
     mJ(r, B; θ = θ) = r[2]/a0 + ifelse(iseven(n(B; θ)), 0.5, 0)
@@ -168,11 +168,11 @@ function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Compl
     δR(dr) = ifelse(dr[2] > 0, δRp(dr), conj(δRp(dr)))
 
     # Mode mixers
-    k_mixer(r, dr, B; θ = θ) = - t * a0^2 * δR(dr) * (J(r, B; θ)^2 / Rav^2 + 0.25 * ℓ(dr)^2 * σ0τ0 / Rav^2 - eAφ(B; θ)^2 * σ0τ0) * σ0τz
-    α_mixer(r, dr, B; θ = θ) = - (α / 2) * δR(dr) * (J(r, B; θ) / Rav - eAφ(B; θ) * σ0τz) * σzτz
+    k_mixer(r, dr, B; θ = θ, w = w) = - t * a0^2 * δR(dr) * (J(r, B; θ)^2 / Rav(w)^2 + 0.25 * ℓ(dr)^2 * σ0τ0 / Rav(w)^2 - eAφ(B; θ, w)^2 * σ0τ0) * σ0τz
+    α_mixer(r, dr, B; θ = θ, w = w) = - (α / 2) * δR(dr) * (J(r, B; θ) / Rav(w) - eAφ(B; θ, w) * σ0τz) * σzτz
 
-    return @hopping!((t, r, dr; B = 0, θ = θ) ->
-        t + k_mixer(r, dr, B; θ) + α_mixer(r, dr, B; θ),
+    return @hopping!((t, r, dr; B = 0, θ = θ, w = w) ->
+        t + k_mixer(r, dr, B; θ, w) + α_mixer(r, dr, B; θ, w),
         range = 2 * a0 * length(harmonics), region = (r, dr) -> ishopm(dr)
     )
 end
