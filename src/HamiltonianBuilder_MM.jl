@@ -62,7 +62,7 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     rashba = @hopping((r, dr; α = α) -> α * (im * dr[1] / (2a0^2)) * σyτz; range = a0, region = (r, dr) -> ishopz(dr))
 
     # g - Zeeman 
-    zeeman = @onsite((; B = B, θ = θ) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B * cos(θ))
+    zeeman = @onsite((; B = B, θ = θ, g = g) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B * cos(θ))
 
     # Magnetic field
     eAφ(B; θ = θ, w = w) = echarge * 0.5 * B * cos(θ) * Rav(w) * πoΦ0
