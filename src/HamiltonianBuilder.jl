@@ -39,9 +39,9 @@
 end
 
 # Hamiltonian constructor 
-ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))
+ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(uUsadel(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel(Δ0, Λ, ω)^2))  # This self-energy respects causality for Re[ω] < 0.
 ΣS3DUsadel_old(Δ0, Λ, ω;) = - Δ0 *(uUsadel_old(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-uUsadel_old(Δ0, Λ, ω)^2))
-ΣS3DBallistic(Δ0, Λ, ω;) = - Δ0 *((ω/Ω(Λ, Δ0)) * σ0τ0 - σ0τx) / sqrt(complex(1-(ω/Ω(Λ, Δ0))^2))
+ΣS3DBallistic(Δ0, Λ, ω;) = - Δ0 *((ω/Ω(Λ, Δ0)) * σ0τ0 - σ0τx) / sqrt(complex(1-(ω/Ω(Λ, Δ0))^2))   # This self-energy respects causality for all ω.
 #ΣS3DUsadel(Δ0, Λ, ω;) = - Δ0 *(usimple(Δ0, Λ, ω) * σ0τ0 - σ0τx) / sqrt(complex(1-usimple(Δ0, Λ, ω)^2))
 ΣΔ(Δ0, Λ, ω;) = (ΔD(Λ, Δ0)^(2/3) - Λ^(2/3))^(3/2) * σ0τx
 Uphase(phase) = exp(im * phase * σ0τz /2)
