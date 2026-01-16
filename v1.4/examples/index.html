@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · FullShell.jl</title><meta name="title" content="Examples · FullShell.jl"/><meta property="og:title" content="Examples · FullShell.jl"/><meta property="twitter:title" content="Examples · FullShell.jl"/><meta name="description" content="Documentation for FullShell.jl."/><meta property="og:description" content="Documentation for FullShell.jl."/><meta property="twitter:description" content="Documentation for FullShell.jl."/><meta property="og:url" content="https://CarlosP24.github.io/FullShell.jl/examples/"/><meta property="twitter:url" content="https://CarlosP24.github.io/FullShell.jl/examples/"/><link rel="canonical" href="https://CarlosP24.github.io/FullShell.jl/examples/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">FullShell.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#Basic-Example:-Building-a-Hamiltonian"><span>Basic Example: Building a Hamiltonian</span></a></li><li><a class="tocitem" href="#Using-Parameter-Structures"><span>Using Parameter Structures</span></a></li><li><a class="tocitem" href="#Parametric-Hamiltonians"><span>Parametric Hamiltonians</span></a></li><li><a class="tocitem" href="#Scanning-Parameters"><span>Scanning Parameters</span></a></li><li><a class="tocitem" href="#Different-Superconductor-Models"><span>Different Superconductor Models</span></a></li><li><a class="tocitem" href="#Electrostatic-Dome-Profile"><span>Electrostatic Dome Profile</span></a></li><li><a class="tocitem" href="#Multi-mJ-Model"><span>Multi-mJ Model</span></a></li><li><a class="tocitem" href="#Chemical-Potential-Modulation"><span>Chemical Potential Modulation</span></a></li><li><a class="tocitem" href="#Flux-Conversion"><span>Flux Conversion</span></a></li><li><a class="tocitem" href="#Little-Parks-Oscillations"><span>Little-Parks Oscillations</span></a></li><li><a class="tocitem" href="#Effective-Gap-and-Integration-Path"><span>Effective Gap and Integration Path</span></a></li><li><a class="tocitem" href="#Angled-Magnetic-Field"><span>Angled Magnetic Field</span></a></li><li><a class="tocitem" href="#Bandwidth-Calculation"><span>Bandwidth Calculation</span></a></li></ul></li><li><a class="tocitem" href="../api/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/CarlosP24/FullShell.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/CarlosP24/FullShell.jl/blob/main/docs/src/examples.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h1><p>This page provides practical examples of using FullShell.jl for different scenarios.</p><h2 id="Basic-Example:-Building-a-Hamiltonian"><a class="docs-heading-anchor" href="#Basic-Example:-Building-a-Hamiltonian">Basic Example: Building a Hamiltonian</a><a id="Basic-Example:-Building-a-Hamiltonian-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-Example:-Building-a-Hamiltonian" title="Permalink"></a></h2><p>The simplest way to build a full-shell Hamiltonian is to specify parameters directly:</p><pre><code class="language-julia hljs">using FullShell
+
+# Build with default parameters
+hSM, hSC, params = build_cyl()
+
+# Build with custom parameters
+hSM, hSC, params = build_cyl(
+    R = 70,      # Cylinder radius (nm)
+    w = 10,      # Semiconductor width (nm)
+    d = 10,      # Superconductor width (nm)
+    Δ0 = 0.23,   # Superconducting gap (meV)
+    μ = 0.75,    # Chemical potential (meV)
+    α = 0.2,     # Rashba SOC (meV·nm)
+    Φ = 1.0,     # Magnetic flux (Φ/Φ₀)
+)</code></pre><h2 id="Using-Parameter-Structures"><a class="docs-heading-anchor" href="#Using-Parameter-Structures">Using Parameter Structures</a><a id="Using-Parameter-Structures-1"></a><a class="docs-heading-anchor-permalink" href="#Using-Parameter-Structures" title="Permalink"></a></h2><p>For more complex workflows, it&#39;s convenient to use the <code>Params</code> structure:</p><pre><code class="language-julia hljs">using FullShell
+
+# Create parameter structure
+p = Params(
+    R = 100,
+    w = 15,
+    d = 10,
+    Δ0 = 0.25,
+    ξd = 70,
+    μ = 0.5,
+    α = 0.3,
+    g = 12,
+    Φ = 0.5,
+)
+
+# Build Hamiltonians
+hSM, hSC, params = build_cyl(p)
+
+# Access parameters
+println(&quot;Radius: &quot;, params.R, &quot; nm&quot;)
+println(&quot;Chemical potential: &quot;, params.μ, &quot; meV&quot;)</code></pre><h2 id="Parametric-Hamiltonians"><a class="docs-heading-anchor" href="#Parametric-Hamiltonians">Parametric Hamiltonians</a><a id="Parametric-Hamiltonians-1"></a><a class="docs-heading-anchor-permalink" href="#Parametric-Hamiltonians" title="Permalink"></a></h2><p>The returned Hamiltonians are parametric and can be evaluated at different parameter values:</p><pre><code class="language-julia hljs">using FullShell, Quantica
+
+hSM, hSC, params = build_cyl(R=70, μ=0.5, α=0.2, Φ=1.0)
+
+# Evaluate at specific parameter values
+h_μ1 = hSC(μ=0.5, Φ=1.0, α=0.2, ω=0)
+h_μ2 = hSC(μ=0.8, Φ=1.0, α=0.2, ω=0)
+
+# Compute band structure
+using Plots
+bands_μ1 = bandstructure(h_μ1, range(-π, π, 100))
+bands_μ2 = bandstructure(h_μ2, range(-π, π, 100))
+
+plot(bands_μ1, label=&quot;μ = 0.5 meV&quot;)
+plot!(bands_μ2, label=&quot;μ = 0.8 meV&quot;)</code></pre><h2 id="Scanning-Parameters"><a class="docs-heading-anchor" href="#Scanning-Parameters">Scanning Parameters</a><a id="Scanning-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Scanning-Parameters" title="Permalink"></a></h2><p>Compute properties as a function of parameters:</p><pre><code class="language-julia hljs">using FullShell, Quantica
+
+hSM, hSC, params = build_cyl(R=70, α=0.2)
+
+# Scan chemical potential
+μ_values = range(0, 2, length=50)
+gap_closing = zeros(length(μ_values))
+
+for (i, μ) in enumerate(μ_values)
+    h = hSC(μ=μ, Φ=1.0, α=0.2, ω=0)
+    bands = bandstructure(h, range(-π, π, 100))
+    # Extract minimum gap (implementation depends on Quantica.jl API)
+    gap_closing[i] = minimum(abs.(energies(bands)))
+end
+
+using Plots
+plot(μ_values, gap_closing, xlabel=&quot;μ (meV)&quot;, ylabel=&quot;Min gap (meV)&quot;)</code></pre><h2 id="Different-Superconductor-Models"><a class="docs-heading-anchor" href="#Different-Superconductor-Models">Different Superconductor Models</a><a id="Different-Superconductor-Models-1"></a><a class="docs-heading-anchor-permalink" href="#Different-Superconductor-Models" title="Permalink"></a></h2><p>You can choose between different models for the superconducting shell:</p><pre><code class="language-julia hljs">using FullShell
+
+# Usadel (diffusive) superconductor (default)
+hSM, hSC_usadel, _ = build_cyl(R=70, Δ0=0.25, shell=&quot;Usadel&quot;)
+
+# Ballistic superconductor
+hSM, hSC_ballistic, _ = build_cyl(R=70, Δ0=0.25, shell=&quot;Ballistic&quot;)
+
+# Simplified gap suppression model
+hSM, hSC_simple, _ = build_cyl(R=70, Δ0=0.25, shell=&quot;Simple&quot;)</code></pre><h2 id="Electrostatic-Dome-Profile"><a class="docs-heading-anchor" href="#Electrostatic-Dome-Profile">Electrostatic Dome Profile</a><a id="Electrostatic-Dome-Profile-1"></a><a class="docs-heading-anchor-permalink" href="#Electrostatic-Dome-Profile" title="Permalink"></a></h2><p>Add a dome-shaped electrostatic potential:</p><pre><code class="language-julia hljs">using FullShell
+
+# Create a dome profile with V(ρ) = Vmax + (Vmin - Vmax)(ρ/R)^n
+hSM, hSC, params = build_cyl(
+    R = 70,
+    Vmax = 1.0,      # Maximum potential at inner radius (meV)
+    Vmin = 0.0,      # Minimum potential at outer radius (meV)
+    Vexponent = 2,   # Exponent controlling profile shape
+)</code></pre><h2 id="Multi-mJ-Model"><a class="docs-heading-anchor" href="#Multi-mJ-Model">Multi-mJ Model</a><a id="Multi-mJ-Model-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-mJ-Model" title="Permalink"></a></h2><p>For explicit angular momentum channels:</p><pre><code class="language-julia hljs">using FullShell
+
+# Build multi-mJ Hamiltonian
+hSM, hSC, params = build_cyl_mm(
+    R = 70,
+    num_mJ = 5,      # Number of angular momentum channels
+    B = 0.1,         # Magnetic field (Tesla)
+    α = 0.2,
+    μ = 0.5,
+)
+
+# Enable hopping between mJ channels
+hSM, hSC, params = build_cyl_mm(
+    R = 70,
+    num_mJ = 5,
+    hops0 = true,        # Enable mJ hopping
+    range_hop_m = 15,    # Hopping range in units of a0
+    B = 0.1,
+)</code></pre><h2 id="Chemical-Potential-Modulation"><a class="docs-heading-anchor" href="#Chemical-Potential-Modulation">Chemical Potential Modulation</a><a id="Chemical-Potential-Modulation-1"></a><a class="docs-heading-anchor-permalink" href="#Chemical-Potential-Modulation" title="Permalink"></a></h2><p>Apply position-dependent chemical potential:</p><pre><code class="language-julia hljs">using FullShell
+
+# Build base Hamiltonian
+hSM, hSC, params = build_cyl(R=70, α=0.2, L=500)
+
+# Define step function
+μ_profile(x) = 0.5 * (1 + tanh((x - 250) / 50))
+
+# Apply modulation
+h_modulated = mux(hSC, μ_profile, params.L)
+
+# Or use the built-in step function
+h_step = mu_step(hSC, L=500, Lstep=250, ς=50, μshift=0.5)</code></pre><h2 id="Flux-Conversion"><a class="docs-heading-anchor" href="#Flux-Conversion">Flux Conversion</a><a id="Flux-Conversion-1"></a><a class="docs-heading-anchor-permalink" href="#Flux-Conversion" title="Permalink"></a></h2><p>Convert between magnetic field and flux:</p><pre><code class="language-julia hljs">using FullShell
+
+params = Params(R=70, d=10)
+
+# Get conversion functions
+Φ_from_B = get_Φ(params)
+B_from_Φ = get_B(params)
+
+# Convert
+B = 0.1  # Tesla
+Φ = Φ_from_B(B)  # in units of Φ₀
+println(&quot;B = $B T corresponds to Φ = $Φ Φ₀&quot;)
+
+# Convert back
+B_check = B_from_Φ(Φ)
+println(&quot;Φ = $Φ Φ₀ corresponds to B = $B_check T&quot;)</code></pre><h2 id="Little-Parks-Oscillations"><a class="docs-heading-anchor" href="#Little-Parks-Oscillations">Little-Parks Oscillations</a><a id="Little-Parks-Oscillations-1"></a><a class="docs-heading-anchor-permalink" href="#Little-Parks-Oscillations" title="Permalink"></a></h2><p>Calculate Little-Parks lobe boundaries:</p><pre><code class="language-julia hljs">using FullShell
+
+params = Params(R=70, d=10, ξd=70)
+
+# Get lobe boundaries for winding number n=1
+Φ_min, Φ_max = LP_lobe(1, params.ξd, params.R, params.d)
+
+println(&quot;Little-Parks lobe for n=1: [$Φ_min, $Φ_max] Φ₀&quot;)
+
+# Check if a flux is in the lobe
+Φ = 1.2
+in_lobe = is_in_lobe(Φ, Φ_min, Φ_max)
+println(&quot;Φ = $Φ Φ₀ is &quot;, in_lobe ? &quot;inside&quot; : &quot;outside&quot;, &quot; the lobe&quot;)</code></pre><h2 id="Effective-Gap-and-Integration-Path"><a class="docs-heading-anchor" href="#Effective-Gap-and-Integration-Path">Effective Gap and Integration Path</a><a id="Effective-Gap-and-Integration-Path-1"></a><a class="docs-heading-anchor-permalink" href="#Effective-Gap-and-Integration-Path" title="Permalink"></a></h2><p>Get the effective superconducting gap and valid imaginary frequency:</p><pre><code class="language-julia hljs">using FullShell
+
+params = Params(R=70, d=10, Δ0=0.25, ξd=70)
+
+# Get effective gap as function of flux
+Ω_func = get_Ω(params)
+Φ = 1.0
+Ω_eff = Ω_func(Φ)
+println(&quot;Effective gap at Φ = $Φ Φ₀: Ω = $Ω_eff meV&quot;)
+
+# Get imaginary frequency threshold
+itip_func = get_itip(params)
+iω_max = itip_func(Φ)
+println(&quot;Maximum safe imaginary frequency: iω = $iω_max meV&quot;)</code></pre><h2 id="Angled-Magnetic-Field"><a class="docs-heading-anchor" href="#Angled-Magnetic-Field">Angled Magnetic Field</a><a id="Angled-Magnetic-Field-1"></a><a class="docs-heading-anchor-permalink" href="#Angled-Magnetic-Field" title="Permalink"></a></h2><p>Apply a magnetic field at an angle to the wire axis:</p><pre><code class="language-julia hljs">using FullShell
+
+# θ = 0: field parallel to wire axis
+hSM, hSC, _ = build_cyl(R=70, Φ=1.0, θ=0.0)
+
+# θ = π/4: field at 45 degrees
+hSM, hSC, _ = build_cyl(R=70, Φ=1.0, θ=π/4)
+
+# θ = π/2: field perpendicular to wire axis
+hSM, hSC, _ = build_cyl(R=70, Φ=1.0, θ=π/2)</code></pre><h2 id="Bandwidth-Calculation"><a class="docs-heading-anchor" href="#Bandwidth-Calculation">Bandwidth Calculation</a><a id="Bandwidth-Calculation-1"></a><a class="docs-heading-anchor-permalink" href="#Bandwidth-Calculation" title="Permalink"></a></h2><p>Calculate the bandwidth of the semiconductor:</p><pre><code class="language-julia hljs">using FullShell
+
+params = Params(R=70, μ=0.5, m0=0.023, a0=5)
+bw = bandwidth(params)
+println(&quot;Bandwidth: $bw meV&quot;)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../api/">API Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Friday 16 January 2026 17:15">Friday 16 January 2026</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
