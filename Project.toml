@@ -1,7 +1,7 @@
 name = "FullShell"
 uuid = "7d6ffa35-d0d1-47cf-a89d-5cba1c019934"
 authors = ["Carlos Payá"]
-version = "1.0.0"
+version = "1.3"
 
 [deps]
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"

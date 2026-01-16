@@ -76,20 +76,29 @@ To enable automatic documentation deployment:
    - Create a new secret named `DOCUMENTER_KEY`
    - Paste the private key
 
-4. **Enable GitHub Pages**:
-   - Go to repository settings → Pages
-   - Set source to "Deploy from a branch"
-   - Select the `gh-pages` branch and `/root` folder
-   - Save
-
-5. **Push your changes**:
+4. **Push your changes** (if not already done):
    ```bash
    git add .
    git commit -m "Add comprehensive documentation"
    git push
    ```
 
-The documentation will automatically build and deploy when you push to the main branch.
+5. **Wait for the GitHub Actions workflow to run**:
+   - Go to your repository → Actions tab
+   - The "Documentation" workflow will run automatically
+   - Wait for it to complete successfully (creates the `gh-pages` branch)
+
+6. **Enable GitHub Pages** (after the first successful workflow run):
+   - Go to repository settings → Pages
+   - Set source to "Deploy from a branch"
+   - Select the `gh-pages` branch and `/ (root)` folder
+   - Click Save
+   
+   **Alternative (recommended)**: Use GitHub Actions source
+   - Set source to "GitHub Actions"
+   - No need to select a branch - it will deploy automatically
+
+The documentation will automatically build and deploy on every push to the main branch.
 
 ## Documentation URL
 

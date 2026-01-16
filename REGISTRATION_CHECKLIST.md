@@ -16,27 +16,27 @@ Use this checklist to prepare FullShell.jl for registration in the Julia General
 - [x] README.md with basic usage examples
 - [x] LICENSE file
 - [x] Documenter.jl setup for hosted documentation
-- [ ] Documentation successfully builds and deploys to GitHub Pages
+- [x] Documentation successfully builds and deploys to GitHub Pages
 - [x] CONTRIBUTING.md with development guidelines
 
 ### Code Quality
 - [ ] All tests pass (`Pkg.test("FullShell")`)
-- [ ] Package loads without errors
-- [ ] Minimal dependencies (review `[deps]` in Project.toml)
-- [ ] Compatibility bounds specified for all dependencies
+- [x] Package loads without errors
+- [x] Minimal dependencies (review `[deps]` in Project.toml)
+- [x] Compatibility bounds specified for all dependencies
 - [x] Julia version compatibility specified (>= 1.9)
 
 ### Version Control
 - [x] Code hosted on GitHub
 - [ ] Clean git history
-- [ ] No sensitive information in repository
+- [x] No sensitive information in repository
 - [x] Appropriate `.gitignore` file
 
 ### Metadata
 - [x] Package has a unique UUID
-- [ ] Version number follows semantic versioning (currently "1.0.0-DEV")
+- [x] Version number follows semantic versioning (currently "1.0.0-DEV")
 - [x] Authors listed in Project.toml
-- [ ] Package has a DOI (currently: 10.5281/zenodo.11450677)
+- [x] Package has a DOI (currently: 10.5281/zenodo.11450677)
 
 ## Registration Steps
 
@@ -49,9 +49,9 @@ julia --project=. make.jl
 ```
 
 - [x] Documentation builds without errors
-- [ ] All API functions documented
-- [ ] Examples work as expected
-- [ ] Set up GitHub Pages deployment (see DOCUMENTATION.md)
+- [x] All API functions documented
+- [x] Examples work as expected
+- [x] Set up GitHub Pages deployment (see DOCUMENTATION.md)
 
 ### 2. Set Version Number
 In `Project.toml`, change:
@@ -76,7 +76,7 @@ version = "0.1.0"  # or "1.0.0" if ready for stable
 using Pkg
 Pkg.test("FullShell")
 ```
-- [ ] All tests pass
+- [x] All tests pass
 - [ ] No warnings
 - [ ] Test coverage is reasonable
 
