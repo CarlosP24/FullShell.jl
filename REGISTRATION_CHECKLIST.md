@@ -95,10 +95,68 @@ git push origin v0.1.0
 ### 6. Register Package
 Use the Julia Registrator:
 
-**Option A: Via GitHub Comment**
-1. Create a GitHub release for your version tag
-2. Comment on a commit/PR: `@JuliaRegistrator register`
-3. Follow the bot's instructions
+**Option A: Via GitHub Comment (Recommended)**
+
+This is the easiest method. The JuliaRegistrator bot watches for mentions on GitHub.
+
+**Step-by-step:**
+
+1. **Make sure your version is tagged and pushed** (you can skip if already done):
+   ```bash
+   git tag -a v1.0.0 -m "Release v1.0.0"
+   git push origin v1.0.0
+   ```
+
+2. **Go to your repository on GitHub**:
+   - Navigate to: https://github.com/CarlosP24/FullShell.jl
+
+3. **Find a recent commit to comment on**:
+   - Go to the "Commits" tab
+   - Click on your most recent commit on the main branch
+   - OR you can create a new issue/PR
+
+4. **Post a comment with the registration command**:
+   ```
+   @JuliaRegistrator register
+   ```
+   
+   **Optional parameters:**
+   - To register a specific branch: `@JuliaRegistrator register branch=branchname`
+   - To target a specific commit: comment directly on that commit
+   - To specify a subdir (if package is in subdirectory): `@JuliaRegistrator register subdir=path/to/package`
+
+5. **Wait for the bot to respond** (usually within a few minutes):
+   - The bot will acknowledge your request
+   - It will perform automated checks
+   - If checks pass, it will create a pull request to the Julia General registry
+   - If there are issues, the bot will tell you what needs to be fixed
+
+6. **Check the created PR**:
+   - The bot will provide a link to the PR in the General registry
+   - Automated tests will run on the PR
+   - Registry maintainers may review (especially for new packages)
+   - If everything passes, the PR will be auto-merged (usually within 20 minutes to 3 days)
+
+**Example bot responses:**
+
+✅ **Success:**
+```
+Your registration request has been completed. Pull request: 
+https://github.com/JuliaRegistries/General/pull/####
+```
+
+❌ **Error example:**
+```
+Registration failed:
+- Compatibility entry for Julia is invalid
+- Package name conflicts with existing package
+```
+
+**Troubleshooting:**
+- If the bot doesn't respond, check you spelled `@JuliaRegistrator` correctly
+- Make sure you have push access to the repository
+- Ensure your Project.toml has all required fields (name, uuid, version, compat entries)
+- Check that your package loads without errors: `julia -e 'using FullShell'`
 
 **Option B: Via Web Interface**
 1. Go to https://juliahub.com/ui/Registrator
