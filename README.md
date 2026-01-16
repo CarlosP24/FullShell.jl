@@ -1,24 +1,40 @@
-# FullShell
+# FullShell.jl
+
 [![DOI](https://zenodo.org/badge/794025449.svg)](https://doi.org/10.5281/zenodo.11450677)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://CarlosP24.github.io/FullShell.jl/dev/)
 
-
-
-Package to build full-shell hybrid semiconductor-superconductor hamiltonians.
+A Julia package for building full-shell hybrid semiconductor-superconductor Hamiltonians.
 
 Uses [Quantica.jl](https://github.com/pablosanjose/Quantica.jl). 
 
-## How to install
-This package is not registered in Julia. In order to use it, run the following code in a Julia REPL:
-````
-julia> using Pkg
-julia> Pkg.activate()
-julia> Pkg.add("https://github.com/CarlosP24/FullShell.jl.git")
-julia> Pkg.instantiate()
-````
+## Documentation
 
+📚 **[Read the full documentation](https://CarlosP24.github.io/FullShell.jl/dev/)**
 
-## Examples
-### Building a full-shell Hamiltonian
+The documentation includes:
+- Comprehensive API reference with detailed docstrings
+- Extensive usage examples
+- Physical model descriptions
+- Parameter guides
+
+## Installation
+
+### From GitHub (Current)
+This package is not yet registered in Julia. To install it, run:
+```julia
+using Pkg
+Pkg.add("https://github.com/CarlosP24/FullShell.jl.git")
+```
+
+### After Registration
+Once registered, you will be able to install it simply with:
+```julia
+using Pkg
+Pkg.add("FullShell")
+```
+
+## Quick Start
+
 Default parameters are in meV and nm.
 ````
 julia> using FullShell
@@ -119,3 +135,45 @@ julia> ρ(ω; ω = ω, Φ = 1, Z = 0)
 1-element OrbitalSliceVector{Vector{Float64}}:
  1.6677498905272993e-6
 ````
+
+For more examples and detailed documentation, see the [full documentation](https://CarlosP24.github.io/FullShell.jl/dev/).
+
+## Features
+
+- **Full-shell geometry**: Model semiconductor nanowires with complete superconducting coverage
+- **Multiple physical effects**:
+  - Rashba and Dresselhaus spin-orbit coupling
+  - Zeeman coupling to magnetic fields
+  - Orbital magnetic field effects
+  - Proximity-induced superconductivity (Usadel and ballistic regimes)
+  - Electrostatic dome profiles
+- **Two modeling approaches**:
+  - Standard approach with continuous angular coordinate
+  - Multi-mJ approach with discrete angular momentum channels
+- **Comprehensive documentation** with examples and API reference
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+- Setting up the development environment
+- Building documentation locally
+- Code style and testing
+- Submitting pull requests
+
+## Citation
+
+If you use FullShell.jl in your research, please cite:
+
+```bibtex
+@software{fullshell_jl,
+  author = {Payá, Carlos},
+  title = {FullShell.jl: Full-shell hybrid semiconductor-superconductor Hamiltonians},
+  year = {2024},
+  doi = {10.5281/zenodo.11450677},
+  url = {https://github.com/CarlosP24/FullShell.jl}
+}
+```
+
+## License
+
+See the LICENSE file for details.

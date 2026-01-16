@@ -2,6 +2,69 @@
 # Modified Hollow Core Hamiltonian for a multi-mJ model. Valid for a SIS with radii mismatch.
 # IMPORTANT NOTICE: THIS CODE USES B INSTEAD OF Φ so LP areas can be different.
 
+"""
+    Params_mm
+
+Parameter structure for multi-mJ (multi-angular-momentum) nanowire Hamiltonians.
+
+This structure is designed for building Hamiltonians that explicitly include multiple
+angular momentum channels (mJ sites) in a single tight-binding model. Unlike `Params`,
+this uses magnetic field B directly rather than normalized flux Φ to allow for different
+effective areas in the semiconductor and superconductor regions.
+
+# Fields
+## Material and lattice parameters
+- `ħ2ome::Float64 = 76.1996`: ℏ²/(2m_e) in meV⋅nm²
+- `πoΦ0::Float64 = 1.519257e-3`: π/Φ₀ in units of 1/(T⋅nm²)
+- `μBΦ0::Float64 = 119.6941183`: Bohr magneton times magnetic flux quantum
+- `m0::Float64 = 0.023`: Effective mass in units of electron mass
+- `a0::Float64 = 5`: Lattice constant
+- `t::Float64`: Hopping parameter (computed from ħ2ome, m0, a0)
+- `echarge::Float64 = 1`: Elementary charge
+
+## Geometry
+- `R::Float64 = 70`: Inner radius of the cylinder
+- `w::Float64 = 10`: Width of the semiconductor shell 
+- `d::Float64 = 10`: Width of the superconductor shell
+- `L::Float64 = 0`: Length of the cylinder 
+
+## Multi-mJ specific
+- `num_mJ::Int = 5`: Number of angular momentum channels to include
+- `hops0::Bool = false`: Whether to include hopping between mJ channels
+- `range_hop_m::Int = 3 * num_mJ`: Range for mJ-channel hoppings (in units of a0)
+
+## Physical parameters
+- `α::Float64 = 0`: Rashba spin-orbit coupling strength
+- `μ::Float64 = 0`: Chemical potential
+- `g::Float64 = 0`: g-factor
+- `τΓ::Float64 = 1`: Coupling strength to superconductor
+- `B::Float64 = 0`: Magnetic field (Tesla)
+- `θ::Float64 = 0`: Angle of magnetic field with respect to wire axis
+
+## Superconducting parameters
+- `Δ0::ComplexF64 = 0.23`: Bulk superconducting gap 
+- `ξd::Float64 = 70`: Superconducting coherence length 
+- `shell::String = "Usadel"`: Type of superconductor ("Usadel" or "Ballistic")
+- `iω::Float64 = 1e-4`: Small imaginary frequency for regularization
+
+## Legacy/unused parameters
+- `σ::Float64 = 0`: Noise parameter (unused, kept for compatibility)
+- `preα::Float64 = 0`: Legacy parameter
+- `Φ::Float64 = 0`: Legacy flux parameter
+- `ishollow::Bool = true`: Legacy parameter
+- `Vmax::Float64 = 0`: Legacy dome profile parameter
+- `Vmin::Float64 = 0`: Legacy dome profile parameter
+- `Vexponent::Float64 = 0`: Legacy dome profile parameter
+
+# Examples
+```julia
+# Create multi-mJ parameters
+p = Params_mm(R=70, num_mJ=5, B=0.1, α=0.2)
+
+# Build multi-mJ Hamiltonian
+hSM, hSC, params = build_cyl_mm(p)
+```
+"""
 @with_kw struct Params_mm @deftype Float64
     ħ2ome = 76.1996
     πoΦ0 = 1.519257e-3                    # πoΦ0 = π/\Phi_0 in 1/(T * nm^2). \Phi / \Phi_0 = π / \Phi_0 * B * RLP^2 = πoΦ0 * B * RLP^2
@@ -38,6 +101,48 @@
     Vexponent = 0
 end
 
+"""
+    build_cyl_mm(; nforced=nothing, phaseshifted=false, kw...)
+    build_cyl_mm(p::Params_mm; nforced=nothing, phaseshifted=false)
+
+Build a multi-mJ (multi-angular-momentum) cylindrical nanowire Hamiltonian.
+
+This function constructs a Hamiltonian that explicitly includes multiple angular momentum
+channels (mJ) as discrete lattice sites. This approach is useful when inter-channel coupling is needed, such as in a radii-mismatch Josephson junction or to introduce profile disorder.
+
+Unlike `build_cyl`, which uses normalized flux Φ/Φ₀, this function uses the magnetic field
+B directly to allow different effective loop areas in different regions.
+
+# Arguments
+- `p::Params_mm`: Parameter structure for multi-mJ model
+- `nforced::Union{Nothing,Int}`: Force a specific winding number
+- `phaseshifted::Bool`: Apply spatially-varying superconducting phase
+- `kw...`: Keyword arguments to override `Params_mm` defaults
+
+# Returns
+- `hSM`: Parametric Hamiltonian for the semiconductor
+- `hSC`: Parametric Hamiltonian with superconducting proximity effect
+- `p`: The `Params_mm` structure used
+
+# Physical Model
+The lattice includes:
+- One spatial dimension (along the wire)
+- `2*num_mJ + 1` transverse sites representing different mJ channels
+- Empty hopping between mJ channels (controlled by `hops0` and `range_hop_m`)
+
+# Examples
+```julia
+# Build with default parameters
+hSM, hSC, params = build_cyl_mm()
+
+# Build with custom parameters
+hSM, hSC, params = build_cyl_mm(R=70, num_mJ=5, B=0.1, α=0.2, μ=0.5)
+
+# Use a Params_mm structure
+p = Params_mm(R=70, w=10, d=10, num_mJ=7, B=0.05)
+hSM, hSC, params = build_cyl_mm(p)
+```
+"""
 build_cyl_mm(; nforced = nothing, phaseshifted = false, kw...) = build_cyl_mm(Params_mm(; kw...); nforced, phaseshifted)
 
 function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
@@ -149,6 +254,24 @@ function get_Ω(wire::Params_mm)
     return (B; θ = 0) -> Ω(pairbreaking(Φ(B), round(Int, Φ(B * cos(θ))), Δ0, ξd, R, d; θ = θ), Δ0)
 end
 
+"""
+    build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
+
+Constructs a hopping function that incorporates harmonic deformations into the Hamiltonian for a multimode wire.
+
+# Arguments
+- `wire::Params_mm`: Structure containing wire parameters-
+- `harmonics::Dict{Int, Complex}`: Dictionary mapping harmonic indices to complex deformation amplitudes.
+
+# Returns
+- A hopping function with harmonic deformation effects, suitable for use with the `@hopping!` macro.
+
+# Details
+The function defines several utilities for Hamiltonian construction, including effective radius calculations, flux, and angular momentum operators. Harmonic deformations are encoded via the `harmonics` dictionary and incorporated into the hopping terms through `k_mixer` and `α_mixer`, which modify the kinetic and spin-orbit contributions, respectively.
+
+The returned hopping function includes these deformation effects and restricts hopping to the appropriate region using the `ishopm` utility.
+
+"""
 function build_harmonic_deformations(wire::Params_mm, harmonics::Dict{Int, Complex})
     @unpack R, w, d, πoΦ0, echarge, a0, t, θ = wire
 
