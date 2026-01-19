@@ -152,13 +152,6 @@ For more examples and detailed documentation, see the [full documentation](https
   - Multi-mJ approach with discrete angular momentum channels
 - **Comprehensive documentation** with examples and API reference
 
-## Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-- Setting up the development environment
-- Building documentation locally
-- Code style and testing
-- Submitting pull requests
 
 ## Citation
 
@@ -171,6 +164,20 @@ If you use FullShell.jl in your research, please cite:
   year = {2024},
   doi = {10.5281/zenodo.11450677},
   url = {https://github.com/CarlosP24/FullShell.jl}
+}
+```
+
+and Quantica.jl:
+
+```bibtex
+@software{Quantica,
+  author       = {Pablo San-Jose},
+  title        = {pablosanjose/Quantica.jl},
+  month        = apr,
+  year         = 2024,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.4762963},
+  url          = {https://doi.org/10.5281/zenodo.4762963}
 }
 ```
 
