@@ -226,10 +226,9 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
     # Shift energy zero to band bottom (minimum positive eigenvalue in particle sector)
-    eigs_temp = real.(eigvals(Array(hSM(; μ = 0)[])))
+    eigs_temp = real.(eigvals(Array(hSM(; μ = 0, Vmin = 0, Vmax = 0)[])))
     E_bottom = minimum(abs.(filter(x -> x < 0, eigs_temp)))  # Smallest negative eigenvalue
-    println("E_bottom = ", E_bottom)
-    
+
     E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
     hSM = hSM |> E_bottom!
 
