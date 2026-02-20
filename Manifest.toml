@@ -2,7 +2,7 @@
 
 julia_version = "1.12.4"
 manifest_format = "2.0"
-project_hash = "c0173ff54a823d0c986d50ca40b9f929e13737bf"
+project_hash = "9961637dc96d779cf5d4ac968d4f82e73c73aa08"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
@@ -146,7 +146,7 @@ uuid = "7e584817-dab4-53a9-9a51-4037a36b0ad0"
 version = "0.1.2"
 
 [[deps.FullShell]]
-deps = ["Parameters", "Quantica", "Roots"]
+deps = ["Parameters", "Quantica", "Roots", "StaticArrays"]
 path = "."
 uuid = "7d6ffa35-d0d1-47cf-a89d-5cba1c019934"
 version = "1.4.0"
