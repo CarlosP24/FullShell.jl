@@ -227,7 +227,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     E_bottom = minimum(real.(eigvals(Array(hSM(; μ = 0)[]))))
 
-    E_bottom! = @onsite!((o, r;) -> o - E_bottom)
+    E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz)
     hSM = hSM |> E_bottom!
 
     # Superconductor
