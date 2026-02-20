@@ -24,6 +24,8 @@ The basis is ordered as: |↑e⟩, |↓e⟩, |↑h⟩, |↓h⟩, where:
 - `c_down`: Projects onto spin-down sector (electrons and holes)
 """
 
+using StaticArrays
+
 const σ0τx = @SMatrix[0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
 const σ0τy = @SMatrix[0 0 -im 0; 0 0 0 -im; im 0 0 0; 0 im 0 0]
 const σ0τz = @SMatrix[1 0 0 0; 0 1 0 0; 0 0 -1 0; 0 0 0 -1]

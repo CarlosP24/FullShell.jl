@@ -77,7 +77,9 @@ hSM, hSC, params = build_cyl(p)
     Δs = 390  
     preα = P^2/3 * (1/Δg^2 - 1/(Δg + Δs)^2)  #α = preα \times Rashba things
     a0 = 5
+    az = a0
     t = ħ2ome/(2m0*a0^2)
+    tz = t
     echarge = 1
     R = 70                              #radius of the cylinder
     w = 10                              #width of the semiconductor
@@ -172,25 +174,32 @@ hSM, hSC, params = build_cyl(R=70, Φ=1.5, nforced=1)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
+    @unpack μBΦ0, m0, g, preα, a0, az, t, tz, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
 
     # Lattice
     RLP2 = (R + d/2)^2
     R = floor(R/a0)*a0
     area_LP = π * RLP2 
 
+    A0 = max(a0, az)
+
     lat = if ishollow
-      
             Rav = R - w/2
             LP.square(; a0) |> supercell((1, 0)) |> Quantica.transform!(r -> r + SA[0, Rav])
           else
-            LP.square(; a0) |> supercell((1, 0), region = r -> max(a0, R - w) <= r[2] <= R)
+            lattice(sublat((0., 0.)); bravais = SA[az 0.; 0. a0]', kw...) |> supercell((1, 0), region = r -> max(a0, R - w) <= r[2] <= R)
           end
 
     # Model
 
     # Kinetic term
-    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow)  - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = a0)
+    p2 = @onsite((r; μ = μ) -> σ0τz *(t * ifelse(r[2] ≈ a0, 2.0 + 1.5, 2.0 + 2.0*!ishollow)  - μ)) + hopping((r, dr) -> -t * σ0τz * ifelse(iszero(dr[1]), r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2), 1); range = A0)
+    
+    p2 = if ishollow
+      @onsite((r; μ = μ) -> σ0τz * tz * 2.0) + hopping((r, dr) -> -tz * σ0τz; range = A0)
+    else
+      @onsite((r; μ = μ) -> σ0τz * ifelse(r[2] ≈ a0, 2.0 * tz + 1.5 * t, 2.0 * tz + 2.0 * t)) + hopping((r, dr) -> -tz * σ0τz; range = A0)
+    end
 
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
@@ -198,7 +207,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     potential = @onsite((r; Vmax = Vmax, Vmin = Vmin, ) -> σ0τz * V(r[2], Vmax, Vmin))
 
     # Linear SOC
-    rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * a0^2)) * σyτz; range = a0)
+    rashba = @hopping((r, dr; α = α, preα = preα, Vmin = Vmin, Vmax = Vmax) -> (α + preα * dϕ(r[2], Vmax, Vmin)) * (im * dr[1] / (2 * az^2)) * σyτz; range = A0)
 
     # g - Zeeman
     zeeman = @onsite((; Φ = Φ, θ = θ) -> σzτ0 * 0.5 * g * μBΦ0 * Φ * cos(θ) / area_LP)
