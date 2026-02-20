@@ -216,9 +216,11 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     n(Φ; θ = θ) = ifelse(nforced === nothing, round(Int, Φ * cos(θ)), nforced)
     mJ(Z, Φ; θ = θ) = Z + ifelse(iseven(n(Φ; θ)), 0.5, 0.0)
     J(Z, Φ; θ = θ) = mJ(Z, Φ; θ) * σ0τ0 - 0.5 * σzτ0 - 0.5 * n(Φ; θ) * σ0τz
+    # For filled cylinder: use effective radius that accounts for DLL-FDM boundary (add a0/2 to avoid divergence at r=a0)
+    reff(r) = ishollow ? r[2] : r[2] + 0.5*a0
     gauge = @onsite((r; Φ = Φ, θ = θ, Z = Z, α = α, preα = preα, Vmax = Vmax, Vmin = Vmin) ->
-          σ0τz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2])^2 * t * a0^2 -
-          σzτz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / r[2]) * (α + preα * dϕ(r[2], Vmax, Vmin))
+          σ0τz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / reff(r))^2 * t * a0^2 -
+          σzτz * (σ0τz * eAφ(r, Φ; θ) + J(Z, Φ; θ) / reff(r)) * (α + preα * dϕ(r[2], Vmax, Vmin))
     )
 
     # SM hamiltonian 
