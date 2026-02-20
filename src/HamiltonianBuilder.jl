@@ -225,7 +225,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
-    E_bottom = minimum(real.(eigvals(Array(hSM[(; μ=0)]))))
+    E_bottom = minimum(real.(eigvals(Array(hSM(; μ = 0)[]))))
 
     E_bottom! = @onsite!((o, r;) -> o - E_bottom)
     hSM = hSM |> E_bottom!
