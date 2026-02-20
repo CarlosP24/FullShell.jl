@@ -199,7 +199,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     p2 = if ishollow
       @onsite((r; μ = μ) -> σ0τz * tz * 2.0) + hopping((r, dr) -> -tz * σ0τz; range = A0)
     else
-      @onsite((r; μ = μ) -> σ0τz * ifelse(r[2] ≈ a0, 2.0 * tz + 1.5 * t, 2.0 * tz + 2.0 * t)) + hopping((r, dr) -> -tz * σ0τz; range = A0)
+      @onsite((r; μ = μ) -> σ0τz * (ifelse(r[2] ≈ a0, 2.0 * tz + 1.5 * t, 2.0 * tz + 2.0 * t) - μ)) - + hopping((r, dr) -> -tz * σ0τz; range = A0)
     end
 
     # Dome profile
