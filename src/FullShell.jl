@@ -46,6 +46,7 @@ module FullShell
 using Quantica 
 using Parameters
 using Roots
+using StaticArrays
 
 export build_cyl, build_cyl_mm, ΣS3DUsadel, pairbreaking, LP_lobe, ΔΛ, get_itip, bandwidth, get_Φ, get_B, get_Ω,build_harmonic_deformations
 
