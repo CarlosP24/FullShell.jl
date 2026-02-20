@@ -188,7 +188,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
             Rav = R - w/2
             LP.square(; a0) |> supercell((1, 0)) |> Quantica.transform!(r -> r + SA[0, Rav])
           else
-            lattice(sublat((0., 0.)); bravais = SA[az 0.; 0. a0]', kw...) |> supercell((1, 0), region = r -> max(a0, R - w) <= r[2] <= R)
+            lattice(sublat((0., 0.)); bravais = SA[az 0.; 0. a0]') |> supercell((1, 0), region = r -> max(a0, R - w) <= r[2] <= R)
           end
 
     # Model
