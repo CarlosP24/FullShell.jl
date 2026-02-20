@@ -79,7 +79,6 @@ hSM, hSC, params = build_cyl(p)
     a0 = 5
     az = a0
     t = ħ2ome/(2m0*a0^2)
-    tz = t
     echarge = 1
     R = 70                              #radius of the cylinder
     w = 10                              #width of the semiconductor
@@ -174,7 +173,9 @@ hSM, hSC, params = build_cyl(R=70, Φ=1.5, nforced=1)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, m0, g, preα, a0, az, t, tz, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
+    @unpack μBΦ0, m0, g, preα, a0, az, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
+    
+    tz = ħ2ome/(2m0*az^2)
 
     # Lattice
     RLP2 = (R + d/2)^2
