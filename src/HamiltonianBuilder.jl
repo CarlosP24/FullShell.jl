@@ -225,6 +225,10 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
+    E_bottom = minimum(real.(eigvals(Array(hSM[(; μ=0)]))))
+
+    E_bottom! = @onsite!((0, r;) -> o - E_bottom)
+    hSM = hSM |> E_bottom!
     # Superconductor
     Λ(Φ, θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
 
