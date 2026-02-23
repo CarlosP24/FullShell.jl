@@ -176,6 +176,7 @@ build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(;
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell, bandbottom = p
     
+    t = ħ2ome/(2m0*a0^2)
     tz = ħ2ome/(2m0*az^2)
 
     # Lattice
