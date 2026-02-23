@@ -231,6 +231,13 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
+    if bandbottom
+      h0_SM = hSM(; μ = 0, Φ = 0, preα = 0, α = 0)[] |> Array
+      E_bottom = minimum(real(eigvals(h0_SM)))  # lowest eigenvalue of SM, not abs!
+      E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
+      hSM = hSM |> E_bottom!
+    end
+    
     # Superconductor
     Λ(Φ, θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
 
@@ -261,13 +268,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
       hSC = hSC |> PhaseShift!
     end
 
-    if bandbottom
-      h0_SM = hSM(; μ = 0, Φ = 0, preα = 0, α = 0)[] |> Array
-      E_bottom = minimum(real(eigvals(h0_SM)))  # lowest eigenvalue of SM, not abs!
-      E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
-      hSM = hSM |> E_bottom!
-      hSC = hSC |> E_bottom!
-    end
+
 
     return hSM, hSC, p
 end
