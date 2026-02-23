@@ -256,7 +256,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
       hSC = hSC |> PhaseShift!
     end
     if bandbottom
-      h0_BdG = hSC(; μ = 0, Vmin = 0, Vmax = 0)[] |> Array
+      h0_BdG = hSC(; μ = 0,)[] |> Array
       E_bottom = h0_BdG |> eigvals .|> abs |> minimum
       E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
       hSC = hSC |> E_bottom!
