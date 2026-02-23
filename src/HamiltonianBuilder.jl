@@ -262,7 +262,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     end
 
     if bandbottom
-      h0_SM = hSM(; μ = 0, Φ = 0, Vmax = 0, Vmin = 0, α = 0)[] |> Array
+      h0_SM = hSM(; μ = 0, Φ = 0, preα = 0, α = 0)[] |> Array
       E_bottom = minimum(real(eigvals(h0_SM)))  # lowest eigenvalue of SM, not abs!
       E_bottom! = @onsite!((o, r;) -> o + E_bottom * σ0τz; region = Returns(true))
       hSM = hSM |> E_bottom!
