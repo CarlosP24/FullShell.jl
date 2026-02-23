@@ -97,7 +97,7 @@ hSM, hSC, params = build_cyl(p)
     L = 100                             #length of the cylinder
     shell::String = "Usadel"
     Z = 0
-    bandbottom = false                  # whether to shift the energy zero to the band bottom (minimum positive eigenvalue in particle sector)
+    bandbottom::Bool = false                  # whether to shift the energy zero to the band bottom (minimum positive eigenvalue in particle sector)
 
     # unneccesary here, but needed for legacy code
     num_mJ = 5
