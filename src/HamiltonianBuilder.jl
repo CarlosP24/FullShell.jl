@@ -97,7 +97,7 @@ hSM, hSC, params = build_cyl(p)
     L = 100                             #length of the cylinder
     shell::String = "Usadel"
     Z = 0
-    bandbottom::Bool = false                  # whether to shift the energy zero to the band bottom (minimum positive eigenvalue in particle sector)
+    bandbottom::Bool = false            # whether to shift the energy zero to the band bottom 
 
     # unneccesary here, but needed for legacy code
     num_mJ = 5
@@ -174,7 +174,7 @@ hSM, hSC, params = build_cyl(R=70, Φ=1.5, nforced=1)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell, bandbottom = p
+    @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell, bandbottom = p
     
     t = ħ2ome/(2m0*a0^2)
     tz = ħ2ome/(2m0*az^2)
@@ -201,7 +201,11 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     else
       @onsite((r; μ = μ) -> σ0τz * (ifelse(r[2] ≈ a0, 2.0 * tz + 1.5 * t, 2.0 * tz + 2.0 * t) - μ)) + hopping((r, dr) -> -tz * σ0τz * iszero(dr[2]) - t * σ0τz * iszero(dr[1]) * r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2); range = A0)
     end
-
+    # p2 = if ishollow
+    #   @onsite((r; μ = μ) -> σ0τz * (tz * 2.0 - μ)) + hopping((r, dr) -> -tz * σ0τz; range = A0)
+    # else
+    #   @onsite((r; μ = μ) -> σ0τz * (ifelse(r[2] ≈ a0, 0.5 * t, 0.0) - μ)) + hopping((r, dr) -> -tz * σ0τz * iszero(dr[2]) - t * σ0τz * iszero(dr[1]) * r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2); range = A0)
+    # end
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
     dϕ(ρ, v0, v1) = - (Vexponent/R) * (v1 - v0) * (ρ/R)^(Vexponent - 1) # ϕ = -V
@@ -241,7 +245,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     end
 
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = θ) ->
-          o +  τΓ * ΣS(Δ0, Λ(Φ, θ), ω);
+          o +  τΓ * a0 / (2π * R) *  ΣS(Δ0, Λ(Φ, θ), ω);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
@@ -256,10 +260,12 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     if phaseshifted
       hSC = hSC |> PhaseShift!
     end
+
     if bandbottom
-      h0_BdG = hSC(; μ = 0,)[] |> Array
-      E_bottom = h0_BdG |> eigvals .|> abs |> minimum
-      E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
+      h0_SM = hSM(; μ = 0, Φ = 0, Vmax = 0, Vmin = 0, α = 0)[] |> Array
+      E_bottom = minimum(real(eigvals(h0_SM)))  # lowest eigenvalue of SM, not abs!
+      E_bottom! = @onsite!((o, r;) -> o + E_bottom * σ0τz; region = Returns(true))
+      hSM = hSM |> E_bottom!
       hSC = hSC |> E_bottom!
     end
 
