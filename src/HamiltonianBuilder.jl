@@ -234,10 +234,10 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     if bandbottom
       h0_SM = hSM(; μ = 0, Φ = 0, preα = 0, α = 0)[] |> Array
       E_bottom = minimum(real(eigvals(h0_SM)))  # lowest eigenvalue of SM, not abs!
-      E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
+      E_bottom! = @onsite!((o, r;) -> o - 0.5*E_bottom * σ0τz; region = Returns(true))
       hSM = hSM |> E_bottom!
     end
-    
+
     # Superconductor
     Λ(Φ, θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
 
