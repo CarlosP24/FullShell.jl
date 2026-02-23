@@ -1,7 +1,7 @@
 using Quantica, FullShell
 using LinearAlgebra, Parameters
 
-p = Params(; ishollow = false, R = 70, w = 70)
+p = Params(; ishollow = false, R = 70, w = 70, a0 = 2)
 @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell, bandbottom = p
 
 nforced = nothing
@@ -60,4 +60,7 @@ nforced = nothing
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
-    sp = spectrum(hSM, 0)
+    sp = spectrum(hSM(; μ = 0, Φ = 0, preα = 0), 0)
+
+    ϵs, ψs = sp 
+    ϵs .|> real .|> abs |> minimum

@@ -201,11 +201,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     else
       @onsite((r; μ = μ) -> σ0τz * (ifelse(r[2] ≈ a0, 2.0 * tz + 1.5 * t, 2.0 * tz + 2.0 * t) - μ)) + hopping((r, dr) -> -tz * σ0τz * iszero(dr[2]) - t * σ0τz * iszero(dr[1]) * r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2); range = A0)
     end
-    # p2 = if ishollow
-    #   @onsite((r; μ = μ) -> σ0τz * (tz * 2.0 - μ)) + hopping((r, dr) -> -tz * σ0τz; range = A0)
-    # else
-    #   @onsite((r; μ = μ) -> σ0τz * (ifelse(r[2] ≈ a0, 0.5 * t, 0.0) - μ)) + hopping((r, dr) -> -tz * σ0τz * iszero(dr[2]) - t * σ0τz * iszero(dr[1]) * r[2]/sqrt(r[2]^2 - 0.25*dr[2]^2); range = A0)
-    # end
+    
     # Dome profile
     V(ρ, v0, v1) = v0 + (v1 - v0) * (ρ/R)^Vexponent
     dϕ(ρ, v0, v1) = - (Vexponent/R) * (v1 - v0) * (ρ/R)^(Vexponent - 1) # ϕ = -V
@@ -253,7 +249,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     end
 
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = θ) ->
-          o +  τΓ * a0 / (2π * R) *  ΣS(Δ0, Λ(Φ, θ), ω);
+          o +  τΓ *  ΣS(Δ0, Λ(Φ, θ), ω) * a0/ (2π * R);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
