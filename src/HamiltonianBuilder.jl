@@ -97,6 +97,7 @@ hSM, hSC, params = build_cyl(p)
     L = 100                             #length of the cylinder
     shell::String = "Usadel"
     Z = 0
+    bandbottom = false                  # whether to shift the energy zero to the band bottom (minimum positive eigenvalue in particle sector)
 
     # unneccesary here, but needed for legacy code
     num_mJ = 5
@@ -173,7 +174,7 @@ hSM, hSC, params = build_cyl(R=70, Φ=1.5, nforced=1)
 build_cyl(; nforced = nothing, phaseshifted = false, kw...) = build_cyl(Params(; kw...); nforced, phaseshifted)
 
 function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
-    @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell = p
+    @unpack μBΦ0, ħ2ome, m0, g, preα, a0, az, t, echarge, R, w, d, Vmax, Vmin, Vexponent, Δ0, ξd, α, μ, τΓ, Φ, θ, Z, ishollow, shell, bandbottom = p
     
     tz = ħ2ome/(2m0*az^2)
 
@@ -225,12 +226,14 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
 
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
-    # Shift energy zero to band bottom (minimum positive eigenvalue in particle sector)
-    eigs_temp = real.(eigvals(Array(hSM(; μ = 0, Vmin = 0, Vmax = 0)[])))
-    E_bottom = minimum(abs.(filter(x -> x < 0, eigs_temp)))  # Smallest negative eigenvalue
+    if bandbottom
+      # Shift energy zero to band bottom (minimum positive eigenvalue in particle sector)
+      eigs_temp = real.(eigvals(Array(hSM(; μ = 0, Vmin = 0, Vmax = 0)[])))
+      E_bottom = minimum(abs.(filter(x -> x < 0, eigs_temp)))  # Smallest negative eigenvalue
 
-    E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
-    hSM = hSM |> E_bottom!
+      E_bottom! = @onsite!((o, r;) -> o - E_bottom * σ0τz; region = Returns(true))
+      hSM = hSM |> E_bottom!
+    end
 
     # Superconductor
     Λ(Φ, θ) = pairbreaking(Φ, n(Φ; θ), Δ0, ξd, R, d; θ = θ)
