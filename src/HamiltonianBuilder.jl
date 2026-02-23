@@ -232,7 +232,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
     if bandbottom
-      sp = spectrum(hSM, 0)
+      sp = spectrum(hSM(; μ = 0, preα = 0, α = 0, Φ = 0), 0)
       ϵs, _ = sp
       ϵmin = ϵs .|> real .|> abs |> minimum
       E_bottom! = @onsite!((o;) -> o - ϵmin * σ0τz)
