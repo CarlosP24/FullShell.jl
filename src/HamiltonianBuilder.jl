@@ -249,7 +249,7 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     end
 
     ΣS! = @onsite!((o, r; ω = 0, Φ = Φ, τΓ = τΓ, θ = θ) ->
-          o +  τΓ *  ΣS(Δ0, Λ(Φ, θ), ω);
+          o +  τΓ *  ΣS(Δ0, Λ(Φ, θ), ω) * a0 / (2π * R);
           region = ishollow ? Returns(true) : r -> r[2] > R - a0/2
     )
 
