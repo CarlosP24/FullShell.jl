@@ -228,9 +228,13 @@ function build_cyl(p::Params; nforced = nothing, phaseshifted = false)
     hSM = lat |> hamiltonian(p2 + potential + rashba + zeeman + gauge; orbitals = Val(4))
 
     if bandbottom
-      sp = spectrum(hSM(; μ = 0, preα = 0, α = 0, Φ = 0), 0)
-      ϵs, _ = sp
-      ϵmin = ϵs .|> real .|> abs |> minimum
+      ϵs, ψs = spectrum(hSM(; μ = 0, preα = 0, α = 0, Φ = 0), 0)
+      ψvecs = collect(eachcol(ψs))      # Separate per eigenvalue
+      ψr = [reshape(ψ, 4, :) for ψ in ψvecs]   # Reorganize orbitals x radial x longitudinal
+      ψfr = [sum(abs2, ψ, dims = 2)|> vec for ψ in ψr]   # Integrate radial direction 
+      thr = 1e-10
+      idx = findall(i -> abs(ψfr[i][1]) > thr || abs(ψfr[i][2]) > thr, eachindex(ψfr))
+      ϵmin = ϵs[idx] .|> real |> minimum
       E_bottom! = @onsite!((o;) -> o - ϵmin * σ0τz)
       hSM = hSM |> E_bottom!
     end
@@ -368,4 +372,11 @@ due to magnetic field and pair-breaking effects.
 function get_Ω(wire::Params)
   @unpack Δ0, ξd, R, d, θ = wire
   return (Φ; θ = θ) -> Ω(pairbreaking(Φ, round(Int, Φ * cos(θ)), Δ0, ξd, R, d; θ), Δ0)
+end
+
+function reshape_orbitals_radial_longitudinal(ψ, srad)
+    n = length(ψ)
+    block = 4 * srad
+    N = Int(n ÷ block)
+    return reshape(ψ, 4, srad, N)
 end
