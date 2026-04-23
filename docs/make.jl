@@ -20,4 +20,5 @@ makedocs(
 deploydocs(
     repo = "github.com/CarlosP24/FullShell.jl.git",
     devbranch = "main",
+    versions = ["stable" => "v^", "v#.#.#", "dev" => "dev"],
 )
