@@ -167,7 +167,8 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     rashba = @hopping((r, dr; α = α) -> α * (im * dr[1] / (2a0^2)) * σyτz; range = a0, region = (r, dr) -> ishopz(dr))
 
     # g - Zeeman 
-    zeeman = @onsite((; B = B, θ = θ, g = g) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B * cos(θ))
+    # μB = μBΦ0 * πoΦ0 / π = μB * Φ0 * (π/Φ0) / π
+    zeeman = @onsite((; B = B, θ = θ, g = g) -> σzτ0 * 0.5 * g * μBΦ0 * πoΦ0 * B * cos(θ) / π)
 
     # Magnetic field
     eAφ(B; θ = θ, w = w) = echarge * 0.5 * B * cos(θ) * Rav(w) * πoΦ0
@@ -193,7 +194,8 @@ function build_cyl_mm(p::Params_mm; nforced = nothing, phaseshifted = false)
     hSM = lat |> hamiltonian(model; orbitals = Val(4))
 
     # Superconductor
-    Λ(B, θ) = pairbreaking(Φ(B), n(B; θ), Δ0, ξd, R, d; θ = θ)
+    # pairbreaking applies cos(θ)/sin(θ) itself, so it takes the total flux
+    Λ(B, θ) = pairbreaking(B * RLP2 * πoΦ0, n(B; θ), Δ0, ξd, R, d; θ = θ)
 
     if shell == "Usadel"
         ΣS = ΣS3DUsadel
